@@ -1,0 +1,112 @@
+{{- if not .Values.schedule -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.minReplicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      {{- if .Values.secrets }}
+      serviceAccountName: secrets-account
+      volumes:
+        - name: app-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "aws-secrets-application"
+      {{- end }}
+      {{- if .Values.initContainer }}
+      initContainers:
+        - name: {{ .Values.name }}-init
+          image: {{ .Values.initContainer.image }}
+          {{- if .Values.initContainer.args }}
+          args: {{ .Values.initContainer.args }}
+          {{- end }}
+          env:
+            {{- range $k,$v := .Values.initContainer.env }}
+            - name: {{ $k | quote }}
+              value: {{ $v | quote }}
+            {{- end }}
+            {{- range $k,$v := .Values.initContainer.secrets }}
+            - name: {{ $k | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: "application-secrets"
+                  key:  {{ $v | quote }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.name }}
+          image: {{ .Values.image }}
+          ports:
+            - name: http-port
+              containerPort: {{ .Values.httpPort }}
+            - name: metrics-port
+              containerPort: {{ .Values.metricsPort }}
+          env:
+            {{- range $k,$v := .Values.env }}
+            - name: {{ $k | quote }}
+              value: {{ $v | quote }}
+            {{- end }}
+            {{- range $k,$v := .Values.secrets }}
+            - name: {{ $k | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: "application-secrets"
+                  key:  {{ $v | quote }}
+          {{- end }}
+          {{- if .Values.secrets }}
+          # Volume mount is required for the AWS secret to sync with kubernetes secret - https://aws.amazon.com/blogs/security/how-to-use-aws-secrets-configuration-provider-with-kubernetes-secrets-store-csi-driver
+          volumeMounts:
+            - name: app-secrets
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
+          {{- end }}
+          resources:
+            requests:
+              memory: {{.Values.minMemory | quote }}
+              cpu: {{.Values.minCPU | quote }}
+            limits:
+              memory: {{.Values.maxMemory| quote }}
+              cpu: {{.Values.maxCPU | quote }}
+          readinessProbe:
+            {{- if .Values.cliService }}
+            exec:
+              command:
+                - ls
+            {{ else }}
+            httpGet:
+              path: {{ .Values.heartbeatURL | quote}}
+              port: {{ .Values.httpPort }}
+            {{- end }}
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            {{- if .Values.cliService }}
+            exec:
+              command:
+                - ls
+            {{ else }}
+            httpGet:
+              path: {{ .Values.heartbeatURL | quote }}
+              port: {{ .Values.httpPort }}
+            {{- end }}
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 3
+---
+  {{- end -}}

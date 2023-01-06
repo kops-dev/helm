@@ -1,0 +1,16 @@
+{{- if not .Values.schedule -}}
+{{- if .Values.grafana_dashboard }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.name }}
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "true"
+data:
+   {{- range $k,$v := .Values.grafana_dashboard }} 
+   {{ $k }}: {{  $v |  toJson | quote }}
+   {{- end }}
+
+{{- end }}
+{{- end }}

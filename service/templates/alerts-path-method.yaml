@@ -1,0 +1,201 @@
+{{- if not .Values.schedule -}}
+{{- if eq (default false .Values.enable_path_method_based_alerts) true }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  generation: 1
+  labels:
+    app: kube-prometheus-stack
+    heritage: Helm
+    release: prometheus
+  name: {{ .Values.name }}-path-method-based-alerts
+spec:
+  groups:
+    - name: {{ .Values.name }}_path_method.rules
+      rules:
+        # Custom Alerts dependent on path and method from user
+        # Alert if the any response code errors in application reaches a threshold (user configurable).
+        {{- range $v := .Values.alerts.path_method.response_code }}
+        {{- if ne $v.absolute_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_{{ snakecase $v.status }}_route_level_error_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} error beyond threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: sum(increase(zs_http_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}", namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}" }[{{ $v.absolute_time_window }}])){{ $v.query_operator | default (printf " > ") }}{{ $v.absolute_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+
+        {{- if ne $v.adaptive_threshold -1.0}}
+        - alert: {{ snakecase $.Values.name }}_{{snakecase $v.status }}_route_level_error_adaptive_alerts_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous {{ $v.adaptive_reference_time_window }} with method {{ $v.method }} and path {{ $v.path }}"
+          expr: ((sum(rate(zs_http_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}", namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 {{ $v.query_operator | default (printf " > ") }}{{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity}}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+
+        {{- if ne $v.percentage_threshold -1.0}}
+        - alert: {{ snakecase $.Values.name }}_{{ snakecase $v.status }}_route_level_error_percentage_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} error percentage beyond threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: sum(rate(zs_http_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}" }[{{ $v.percentage_time_window }}]))/sum(rate(zs_http_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.percentage_time_window }}]))* 100 {{ $v.query_operator | default (printf " > ") }}{{ $v.percentage_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+
+        # Alert if the any outbound response code errors in application reaches a threshold (user configurable).
+        {{- range $v := .Values.alerts.path_method.outbound_response_code }}
+        {{- if ne $v.absolute_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_{{ snakecase $v.status }}_route_level_outbound_error_({{ $v.method}}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} outbound error beyond threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: sum(increase(zs_http_service_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}" }[{{ $v.absolute_time_window }}])){{ $v.query_operator | default (printf " > ") }}{{ $v.absolute_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity}}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+
+        {{- if ne $v.adaptive_threshold -1.0}}
+        - alert: {{ snakecase $.Values.name }}_{{snakecase $v.status }}_route_level_outbound_error_adaptive_alerts_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} outbound errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous {{ $v.adaptive_reference_time_window }} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((sum(rate(zs_http_service_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_service_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 {{ $v.query_operator | default (printf " > ") }}{{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity}}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+
+        {{- if ne $v.percentage_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_{{ snakecase $v.status }}_route_level_outbound_error_percentage_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing {{ $v.status }} outbound error percentage beyond threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: sum(rate(zs_http_service_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}", namespace="{{ $.Release.Namespace }}",status=~"{{ $v.status }}",service="{{ $.Values.name }}" }[{{ $v.percentage_time_window }}]))/sum(rate(zs_http_service_response_count{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.percentage_time_window }}]))* 100 {{ $v.query_operator | default (printf " > ") }}{{ $v.percentage_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity}}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+
+        {{- range $v := .Values.alerts.path_method.request_count }}
+        {{- if ne $v.adaptive_threshold -1.0 }}
+        # Trigger alert if the number of requests in the last 5 mins (user configurable) is 30% (user configurable) higher than the average for last 24 hours (user configurable)
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_request_count_higher_threshold_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps request count {{$v.adaptive_threshold }}% higher for last {{$v.adaptive_time_window}} over pervious {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((avg(rate(zs_http_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}]))/avg(rate(zs_http_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}]))) * 100) > 100 + {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity}}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        # Trigger alert if the number of requests in the last 5 mins (user configurable) is 30% (user configurable) lower than the average for last 24 hours (user configurable)
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_request_count_lower_threshold_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps request count {{$v.adaptive_threshold}}% lower for last {{$v.adaptive_time_window}} over pervious {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((avg(rate(zs_http_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}]))/avg(rate(zs_http_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}]))) * 100) < 100 - {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+
+        {{- range $v := .Values.alerts.path_method.outbound_request_count }}
+        {{- if ne $v.adaptive_threshold -1.0 }}
+        # Trigger alert if the number of outbound requests in the last 5 mins (user configurable) is 30% (user configurable) higher than the average for last 24 hours (user configurable)
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_outbound_request_count_higher_threshold_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing outbound request count {{$v.adaptive_threshold}}% higher for last {{$v.adaptive_time_window}} over pervious {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((avg(rate(zs_http_service_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}]))/avg(rate(zs_http_service_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}]))) * 100) > 100 + {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        # Trigger alert if the number of outbound requests in the last 5 mins (user configurable) is 30% (user configurable) lower than the average for last 24 hours (user configurable)
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_outbound_request_count_lower_threshold_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps throwing outbound request count {{$v.adaptive_threshold}}% lower for last {{$v.adaptive_time_window}} over pervious {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((avg(rate(zs_http_service_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}]))/avg(rate(zs_http_service_response_count{method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}]))) * 100) < 100 - {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+
+        # Alert if custom percentile application response time increases
+        {{- range $v := .Values.alerts.path_method.response_time }}
+        {{- if ne $v.absolute_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_route_level_p{{$v.absolute_percentile}}_percentile_response_time_increases_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps response time is more than threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: (histogram_quantile({{$v.absolute_percentile}}/100, sum(rate(zs_http_response_bucket{method=~"{{ $v.method }}",path=~"{{ $v.path }}",service="{{ $.Values.name }}"}[{{ $v.absolute_time_window }}])) by (le)))> {{ $v.absolute_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        # Trigger alert if the custom percentile (user configurable) application response time for last 5 mins (user configurable) is more than 15% (user configurable) over last 1 day (user configurable)
+        {{- if ne $v.adaptive_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_response_time_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} p{{ $v.adaptive_percentile}} {{$v.adaptive_threshold}}% higher for last {{$v.adaptive_time_window}} over previous {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((histogram_quantile({{$v.adaptive_percentile}}/100, sum(rate(zs_http_response_bucket{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}])) by (le)))/(histogram_quantile({{$v.adaptive_percentile}}/100, sum(rate(zs_http_response_bucket{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}])) by (le)))* 100) - 100 > {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+
+        # Alert if custom percentile application outbound response time increases
+        {{- range $v := .Values.alerts.path_method.outbound_response_time }}
+        {{- if ne $v.absolute_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_route_level_p{{$v.absolute_percentile}}_percentile_outbound_response_time_increases_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} apps outbound response time is more than threshold with method {{ $v.method }} and path {{ $v.path }}."
+          expr: (histogram_quantile({{$v.absolute_percentile}}/100, sum(rate(zs_http_service_response_bucket{method=~"{{ $v.method }}",path=~"{{ $v.path }}",service="{{ $.Values.name }}"}[{{ $v.absolute_time_window }}])) by (le)))> {{ $v.absolute_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        # Trigger alert if the custom percentile (user configurable) application outbound response time for last 5 mins (user configurable) is more than 15% (user configurable) over last 1 day (user configurable)
+        {{- if ne $v.adaptive_threshold -1.0 }}
+        - alert: {{ snakecase $.Values.name }}_route_level_adaptive_alerts_application_outbound_response_time_({{ $v.method }}_and_{{ $v.path }})
+          annotations:
+            description: "{{ $.Values.name }} p{{ $v.adaptive_percentile}} outbound response time {{$v.adaptive_threshold}}% higher for last {{$v.adaptive_time_window}} over previous {{$v.adaptive_reference_time_window}} with method {{ $v.method }} and path {{ $v.path }}."
+          expr: ((histogram_quantile({{$v.adaptive_percentile}}/100, sum(rate(zs_http_service_response_bucket{ method=~"{{ $v.method }}",path=~"{{ $v.path }}",namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_time_window }}])) by (le)))/(histogram_quantile({{$v.adaptive_percentile}}/100, sum(rate(zs_http_service_response_bucket{method=~"{{ $v.method }}",path=~"{{ $v.path }}", namespace="{{ $.Release.Namespace }}",service="{{ $.Values.name }}" }[{{ $v.adaptive_reference_time_window }}])) by (le)))* 100) - 100 > {{ $v.adaptive_threshold }}
+          labels:
+            severity: {{ $v.severity_level | default $.Values.default_severity }}
+            servicealert: "true"
+            service: {{ $.Values.name }}
+            namespace: {{ $.Release.Namespace }}
+        {{- end }}
+        {{- end }}
+---
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,67 @@
+{{- if  .Values.schedule -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.name}}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  schedule: {{ .Values.schedule}}
+  suspend: {{ .Values.suspend}}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy}}
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          name: {{ .Values.name}}
+          labels:
+            app: {{ .Values.name }}
+        spec:
+          {{- if .Values.secrets }}
+          serviceAccountName: secrets-account
+          volumes:
+            - name: app-secrets
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: "aws-secrets-application"
+          {{- end }}
+          containers:
+            - name: {{ .Values.name }}
+              image: {{ .Values.image }}
+              imagePullPolicy: IfNotPresent
+              ports:
+                - name: metrics-port
+                  containerPort: {{ .Values.metricsPort }}
+              env:
+                {{- range $k,$v := .Values.env }}
+                - name: {{ $k | quote }}
+                  value: {{ $v | quote }}
+                {{- end }}
+                {{- range $k,$v := .Values.secrets }}
+                - name: {{ $k | quote }}
+                  valueFrom:
+                    secretKeyRef:
+                      name: "application-secrets"
+                      key:  {{ $v | quote }}
+              {{- end }}
+              {{- if .Values.secrets }}
+              volumeMounts:
+                - name: app-secrets
+                  mountPath: "/mnt/secrets-store"
+                  readOnly: true
+              {{- end }}
+              resources:
+                requests:
+                  memory: {{.Values.minMemory | quote }}
+                  cpu: {{.Values.minCPU | quote }}
+                limits:
+                  memory: {{.Values.maxMemory| quote }}
+                  cpu: {{.Values.maxCPU | quote }}
+          restartPolicy: Never
+
+  {{- end -}}
