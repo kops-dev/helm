@@ -39,7 +39,7 @@ default_severity: "critical"
 env:
   cloud: "AWS"
 secrets:
-  # DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable: AWS_Secret_Name
+  # DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable: 
 alerts:
   standard:
     infra:
