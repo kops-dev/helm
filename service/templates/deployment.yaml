@@ -16,6 +16,8 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
+      imagePullSecrets:
+      - name: gcr-json-key
       {{- if .Values.secrets }}
       serviceAccountName: secrets-account
       volumes:
