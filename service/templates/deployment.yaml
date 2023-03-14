@@ -18,7 +18,7 @@ spec:
     spec:
       imagePullSecrets:
       - name: gcr-json-key
-      {{- if or  (.Values.secrets) (.Values.db_secrets) }}
+      {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
       serviceAccountName: secrets-account
       volumes:
         - name: app-secrets
@@ -68,18 +68,20 @@ spec:
                   name: "application-secrets"
                   key:  {{ $v | quote }}
             {{- end }}
-            {{- if eq .Values.db_service true }}
-            {{- range $k,$v := .Values.db_env }}
-            - name: {{ $k | quote }}
-              value: {{ $v | quote }}
-             {{- end }}
+            {{- if ne .Values.DB_DIALECT "" }}
             - name: DB_HOST
-              value: "db.{{ $.Release.Namespace }}-sql"
+              value: "{{ $.Release.Namespace }}-sql.db"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "postgresadmin"
+            - name: DB_DIALECT
+              value: {{ .Values.DB_DIALECT }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "application-secrets"
-                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace}}-db-secret"
+                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-db-secret"
             {{- end }}
           {{- if or  (.Values.secrets) (.Values.db_secrets) }}
           # Volume mount is required for the GCP secret to sync with kubernetes secret
