@@ -83,7 +83,7 @@ spec:
                   name: "application-secrets"
                   key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-db-secret"
             {{- end }}
-          {{- if or  (.Values.secrets) (.Values.db_secrets) }}
+          {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
           # Volume mount is required for the GCP secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
