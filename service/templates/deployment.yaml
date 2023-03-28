@@ -74,14 +74,14 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_USER
-              value: "postgresadmin"
+              value: "{{ $.Values.DB_NAME }}_user"
             - name: DB_DIALECT
               value: {{ .Values.DB_DIALECT }}
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: "application-secrets"
-                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-db-secret"
+                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-{{ $.Values.DB_NAME }}-db-secret"
             {{- end }}
           {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
           # Volume mount is required for the GCP secret to sync with kubernetes secret
