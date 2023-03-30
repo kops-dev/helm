@@ -39,7 +39,7 @@ default_severity: "critical"
 env:
   cloud: "GCP"
   HTTP_PORT: 8000
-  TRACER_URL: "https://tempo-distributor.observability-dev.gcpgap.zopsmart.com"
+  TRACER_URL: "http://tempo-distributor.tempo:9411"
   TRACER_EXPORTER: "zipkin"
 
 cluster_name:
