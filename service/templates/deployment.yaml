@@ -74,7 +74,7 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_USER
-              value: "{{ $.Values.DB_NAME }}_user"
+              value: "{{ $.Values.DB_USER }}"
             - name: DB_DIALECT
               value: {{ .Values.DB_DIALECT }}
             - name: DB_PASSWORD
