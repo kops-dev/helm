@@ -66,7 +66,7 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 ###### `default_severity`
 - Default: **`critical`**
 
-  Default severity level that will alerts will be tagged to
+  Default severity level that alerts will be tagged to
 
 #### `Resource allocation`
 
