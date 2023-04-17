@@ -40,6 +40,14 @@ default_severity: "critical"
 # All environment variables can be passed as a map
 env:
   cloud: "GCP"
+  HTTP_PORT: 8000
+  TRACER_URL:
+  TRACER_EXPORTER:
+
+cluster_name:
+DB_DIALECT: ""
+
+
 secrets:
   # DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable: 
 alerts:

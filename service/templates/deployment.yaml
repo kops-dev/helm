@@ -16,7 +16,9 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
-      {{- if .Values.secrets }}
+      imagePullSecrets:
+      - name: gcr-json-key
+      {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
       serviceAccountName: secrets-account
       volumes:
         - name: app-secrets
@@ -24,7 +26,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "aws-secrets-application"
+              secretProviderClass: "gcp-secrets-application"
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
@@ -65,9 +67,24 @@ spec:
                 secretKeyRef:
                   name: "application-secrets"
                   key:  {{ $v | quote }}
-          {{- end }}
-          {{- if .Values.secrets }}
-          # Volume mount is required for the AWS secret to sync with kubernetes secret - https://aws.amazon.com/blogs/security/how-to-use-aws-secrets-configuration-provider-with-kubernetes-secrets-store-csi-driver
+            {{- end }}
+            {{- if ne .Values.DB_DIALECT "" }}
+            - name: DB_HOST
+              value: "{{ $.Release.Namespace }}-sql.db"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "{{ $.Values.DB_USER }}"
+            - name: DB_DIALECT
+              value: {{ .Values.DB_DIALECT }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "application-secrets"
+                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-{{ $.Values.DB_NAME }}-db-secret"
+            {{- end }}
+          {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
+          # Volume mount is required for the GCP secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
