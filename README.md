@@ -41,6 +41,8 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 ###### `metricsScrapeInterval`
 - Default: **`"30s"`**
 
+  Time interval that metrics will be scraped
+
 ###### `cliService`
 - Default: **`false`**
 
@@ -54,12 +56,17 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 ###### `cluster_name`
 - **Required**
 
-  Cluster name
+  Name of the Kubernetes cluster
 
 ###### `DB_DIALECT`
 - Default: **`""`**
 
-  DB type(ex - mysql)
+  DB type(ex - mysql, postgresql are valid)
+  
+###### `default_severity`
+- Default: **`critical`**
+
+  Default severity level that will alerts will be tagged to
 
 #### `Resource allocation`
 
@@ -70,9 +77,9 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | maxCPU                           | optional(string) | Maximum CPU                | `"500m"`  |
 | maxMemory                        | optional(string) | Maximum memory             | `"512Mi"` |
 | minReplicas                      | optional(number) | Minimum number of replicas | `2`       |
-| maxReplicas                      | optional(number) | Minimum number of replicas | `4`       |
+| maxReplicas                      | optional(number) | Maximum number of replicas | `4`       |
 | hpa_cpu_limit                    | optional(number) | HPA CPU limit              | `80`      |
-| pa_memory_limit                  | optional(number) | HPA memory limit           | `80`      |
+| hpa_memory_limit                 | optional(number) | HPA memory limit           | `80`      |
 
 #### `cron JOB`
 
@@ -81,7 +88,6 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | schedule          | optional(string) | schedule           | `""`         |
 | suspend           | optional(bool)   | suspend            | `false`      |
 | concurrencyPolicy | optional(string) | Concurrency policy | `"Replace"`  |
-| default_severity  | optional(string) | default severity   | `"critical"` |
 
 #### `env`
 All environment variables can be passed as a map
@@ -90,23 +96,24 @@ All environment variables can be passed as a map
 |-----------------|------------------|-----------------|--------------|
 | cloud           | optional(string) | Cloud name      | `"GCP"`      |
 | HTTP_PORT       | optional(number) | HTTP port       | `8000`       |
-| TRACER_URL      | optional(string) | Tracer url      | `"Replace"`  |
-| TRACER_EXPORTER | optional(string) | Tracer exporter | `"critical"` |
+| TRACER_URL      | optional(string) | Tracer url      | `""`         |
+| TRACER_EXPORTER | optional(string) | Tracer exporter | `""`         |
 
 
 #### `alerts_standard_infra`
+Standard alerts for Infra resources
 
 | Inputs                               | Type             | Description                                                                     | Default |
 |--------------------------------------|------------------|---------------------------------------------------------------------------------|---------|
-| unavailable_replicas_threshold       | optional(number) | Alert if the available replicas is lesser than number of desired replicas       | `-1`    |
-| pod_restart_threshold                | optional(number) | Alert if the pod restarts goes beyond threshold over a 5-minute window          | `-1`    |
+| unavailable_replicas_threshold       | optional(number) | Alert if the available replicas is lesser than number of desired replicas       | `0`     |
+| pod_restart_threshold                | optional(number) | Alert if the pod restarts goes beyond threshold over a 5-minute window          | `0`     |
 | pod_restart_time_window              | optional(string) | Time window                                                                     | `"5m"`  |
-| hpa_nearing_max_pod_threshold        | optional(number) | Alert if replica count crosses the threshold percentage of max pod count        | `-1`    |
-| service_memory_utilization_threshold | optional(number) | Alert if service memory exceeds threshold                                       | `-1`    |
-| service_cpu_utilization_threshold    | optional(number) | Alert if service cpu exceeds threshold                                          | `-1`    |
-| service_cpu_utilization_time_window  | optional(string) | Time window for service cpu utilization                                         | `""`    |
-| health_check_failure_threshold       | optional(number) | Alert if  application health-check failures goes beyond 50 in a 5-minute window | `-1`    |
-| health_check_failure_time_window     | optional(string) | Time window                                                                     | `"5m"`  |
+| hpa_nearing_max_pod_threshold        | optional(number) | Alert if replica count crosses the threshold percentage of max pod count        | `80`    |
+| service_memory_utilization_threshold | optional(number) | Alert if service memory utilisation exceeds threshold                           | `90`    |
+| service_cpu_utilization_threshold    | optional(number) | Alert if service cpu utilisation exceeds threshold                              | `90`    |
+| service_cpu_utilization_time_window  | optional(string) | Time window for service cpu utilization                                         | `"5m"`  |
+| health_check_failure_threshold       | optional(number) | Alert if  application health-check failures goes beyond 50 in a 5-minute window | `50`    |
+| health_check_failure_time_window     | optional(string) | Health Check failure Time window                                                | `"5m"`  |
 
 
 #### `alerts_standard_response_code`
@@ -116,12 +123,12 @@ All environment variables can be passed as a map
 | Inputs                         | Type             | Description                                                                                                        | Default |
 |--------------------------------|------------------|--------------------------------------------------------------------------------------------------------------------|---------|
 | absolute_threshold             | optional(number) | Alert if the 400 response code errors in application goes beyond 40 in a 5-minute window                           | `500`   |
-| absolute_time_window           | optional(string) | Time window for 400                                                                                                | `"5m"`  |
+| absolute_time_window           | optional(string) | Time window for 400 response code                                                                                 | `"5m"`  |
 | percentage_threshold           | optional(number) | Alert if the 400 response code errors in application goes beyond 40 percent in a given time window                 | `70`    |
-| percentage_time_window         | optional(string) | Time window for 400                                                                                                | `"5m"`  |
+| percentage_time_window         | optional(string) | Time window for 400 percentage alerts                                                                             | `"5m"`  |
 | adaptive_threshold             | optional(number) | Alert if the 400 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window | `15`    |
-| adaptive_time_window           | optional(string) | Time window                                                                                                        | `"5m"`  |
-| adaptive_reference_time_window | optional(string) | Reference Time window                                                                                              | `"3h"`  |
+| adaptive_time_window           | optional(string) | Time window for 400 adaptive alerts                                                                               | `"5m"`  |
+| adaptive_reference_time_window | optional(string) | Reference Time window for 400 adaptive alerts                                                                     | `"3h"`  |
 
 - ###### `401`
 
@@ -295,7 +302,7 @@ All environment variables can be passed as a map
 |--------------------------------|------------------|------------------------------------|---------|
 | adaptive_threshold             | optional(number) | Alerts based on number of requests | `30`    |
 | adaptive_time_window           | optional(string) | Time window                        | `"5m"`  |
-| adaptive_reference_time_window | optional(string) | Time window                        | `"3h"`  |
+| adaptive_reference_time_window | optional(string) | Reference Time window              | `"3h"`  |
 
 #### `alerts_standard_outbound_request_count`
 
@@ -303,7 +310,7 @@ All environment variables can be passed as a map
 |--------------------------------|------------------|---------------------------------------------|---------|
 | adaptive_threshold             | optional(number) | Alerts based on number of outbound requests | `30`    |
 | adaptive_time_window           | optional(string) | Time window                                 | `"5m"`  |
-| adaptive_reference_time_window | optional(string) | Time window                                 | `"3h"`  |
+| adaptive_reference_time_window | optional(string) | Reference Time window                       | `"3h"`  |
 
 #### `alerts_standard_response_count`
 
