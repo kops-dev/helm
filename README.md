@@ -105,14 +105,14 @@ Standard alerts for Infra resources
 
 | Inputs                               | Type             | Description                                                                     | Default |
 |--------------------------------------|------------------|---------------------------------------------------------------------------------|---------|
-| unavailable_replicas_threshold       | optional(number) | Alert if the available replicas is lesser than number of desired replicas       | `-1`    |
-| pod_restart_threshold                | optional(number) | Alert if the pod restarts goes beyond threshold over a 5-minute window          | `-1`    |
+| unavailable_replicas_threshold       | optional(number) | Alert if the available replicas is lesser than number of desired replicas       | `0`     |
+| pod_restart_threshold                | optional(number) | Alert if the pod restarts goes beyond threshold over a 5-minute window          | `0`     |
 | pod_restart_time_window              | optional(string) | Time window for pod restart                                                     | `"5m"`  |
-| hpa_nearing_max_pod_threshold        | optional(number) | Alert if replica count crosses the threshold percentage of max pod count        | `-1`    |
-| service_memory_utilization_threshold | optional(number) | Alert if service memory utilization exceeds threshold                           | `-1`    |
-| service_cpu_utilization_threshold    | optional(number) | Alert if service cpu utilization exceeds threshold                              | `-1`    |
-| service_cpu_utilization_time_window  | optional(string) | Time window for service cpu utilization                                         | `""`    |
-| health_check_failure_threshold       | optional(number) | Alert if  application health-check failures goes beyond 50 in a 5-minute window | `-1`    |
+| hpa_nearing_max_pod_threshold        | optional(number) | Alert if replica count crosses the threshold percentage of max pod count        | `80`    |
+| service_memory_utilization_threshold | optional(number) | Alert if service memory utilization exceeds threshold                           | `90`    |
+| service_cpu_utilization_threshold    | optional(number) | Alert if service cpu utilization exceeds threshold                              | `90`    |
+| service_cpu_utilization_time_window  | optional(string) | Time window for service cpu utilization                                         | `"5m"`  |
+| health_check_failure_threshold       | optional(number) | Alert if  application health-check failures goes beyond 50 in a 5-minute window | `50`    |
 | health_check_failure_time_window     | optional(string) | Time window for health check failure                                            | `"5m"`  |
 
 
