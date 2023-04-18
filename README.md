@@ -443,4 +443,4 @@ Standard alerts for Infra resources
 | adaptive_reference_time_window | optional(string) | Reference Time window                                                                                                                 | `"3h"`   |  
 
 #### Note: 
-  The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the threshols are modified to a value greater than  `-1`.
+  The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
