@@ -238,16 +238,10 @@ Standard alerts for the resources
 | alerts.standard.response_time.adaptive_percentile                         | optional(number) | The configurable application response percentile                                                                                         | `0.99`       |
 | alerts.standard.response_time.adaptive_time_window                        | optional(string) | Time window for response alerts                                                                                                          | `"5m"`       |
 | alerts.standard.response_time.reference_time_window                       | optional(string) | Time window total                                                                                                                        | `"3h"`       |
-
-#### `env`
-All environment variables can be passed as a map
-
-| Inputs          | Type             | Description     | Default      |
-|-----------------|------------------|-----------------|--------------|
-| cloud           | optional(string) | Cloud name      | `"GCP"`      |
-| HTTP_PORT       | optional(number) | HTTP port       | `8000`       |
-| TRACER_URL      | optional(string) | Tracer url      | `""`         |
-| TRACER_EXPORTER | optional(string) | Tracer exporter | `""`         |
+| env.cloud           | optional(string) | Cloud name      | `"GCP"`      |
+| env.HTTP_PORT       | optional(number) | HTTP port       | `8000`       |
+| env.TRACER_URL      | optional(string) | Tracer url      | `""`         |
+| env.TRACER_EXPORTER | optional(string) | Tracer exporter | `""`         |
 
 #### Note: 
   The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
