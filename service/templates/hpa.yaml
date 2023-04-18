@@ -1,8 +1,8 @@
 {{- if not .Values.schedule -}}
 ---
-{{- if (lt (float64 .Values.kubernetes_version) 1.23)}}
+{{- if (lt (float64 .Capabilities.KubeVersion.Minor) 1.23) -}}
 apiVersion: autoscaling/v2beta2
-  {{else}}
+  {{- else}}
 apiVersion: autoscaling/v2
   {{- end}}
 kind: HorizontalPodAutoscaler

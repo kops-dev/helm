@@ -7,8 +7,6 @@ replicaCount: 2
 # Docker container image with tag
 image:
 
-kubernetes_version: 1.24
-
 # Port on which container runs its services
 httpPort: 8000
 metricsPort: 2121
