@@ -194,16 +194,16 @@ All the listed values are related to the alerts.
 
 | Inputs          | Type             | Description                                                                       | Default |
 |-----------------|------------------|-----------------------------------------------------------------------------------|---------|
-| name            | string           | Name of custom alert if user_created events goes below threshold for 5 min        | `""`    |
-| description     | optional(string) | Description of custom alert if user_created events goes below threshold for 5 min | `""`    |
 | alert_rule      | optional(string) | "user_post_get_counter" # Metric Name exposed by /metric endpoint                 |         |
-| sum_by_label    | optional(string) | "events" # Metric events key; can be empty string                                 | `""`    |
-| percentile      | optional(number) | -1.0 #Percentile is useful for histogram queries                                  | `0.0`   |
+| description     | optional(string) | Description of custom alert if user_created events goes below threshold for 5 min | `""`    |
 | label_value     | optional(string) | "user_created" # Metric Event Name; can be empty string                           | `""`    |
+| labels.severity | optional(string) | Severity for custom alerts                                                        | `""`    |
+| name            | string           | Name of custom alert if user_created events goes below threshold for 5 min        | `""`    |
+| percentile      | optional(number) | -1.0 #Percentile is useful for histogram queries                                  | `0.0`   |
 | query_operator  | optional(string) | `<=` # Query Operator, by default its `>`                                         | `>`     |
+| sum_by_label    | optional(string) | "events" # Metric events key; can be empty string                                 | `""`    |
 | time_window     | optional(string) | Time window for the custom alerts                                                 | `""`    |
 | threshold       | optional(number) | Threshold for custom alerts                                                       | `""`    |
-| labels.severity | optional(string) | Severity for custom alerts                                                        | `""`    |
 
 #### Note:
 The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
