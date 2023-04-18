@@ -36,7 +36,7 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | name                  | optional(string) | Name of the service                                  | `"hello-api"`              |
 | replicaCount          | optional(number) | Number of replicas to run                            | `2`                        |
 | schedule              | optional(string) | Cron job schedule                                    | `""`                       |
-| suspend               | optional(string) | Cron job suspend                                     | `false`                    |
+| suspend               | optional(bool)   | Cron job suspend                                     | `false`                    |
 
 ####  `alerts`
 Standard alerts for the resources
