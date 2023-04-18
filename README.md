@@ -441,3 +441,6 @@ Standard alerts for Infra resources
 | adaptive_percentile            | optional(number) | The configurable application response percentile                                                                                      | `-1`     |
 | adaptive_time_window           | optional(string) | Time window for adaptive outbound response time alerts                                                                                | `"5m"`   |
 | adaptive_reference_time_window | optional(string) | Reference Time window                                                                                                                 | `"3h"`   |  
+
+#### Note: 
+  The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the threshols are modified to a value greater than  `-1`.
