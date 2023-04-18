@@ -15,28 +15,6 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 
 | Inputs                                                                    | Type             | Description                                                                                                                              | Default      |
 |---------------------------------------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| cliService            | optional(bool)   | Whether application is a CLI service                 | `false`                    |
-| cluster_name          | string           | Name of the Kubernetes cluster                       |                            |
-| concurrencyPolicy     | optional(string) | Concurrency policy                                   | `"Replace"`                |
-| DB_DIALECT            | string           | DB type(ex - mysql, postgresql are valid)            | `""`                       |
-| default_severity      | string           | Default severity level that alerts will be tagged to | `critical`                 |
-| heartbeatURL          | optional(string) | Heartbeat URL                                        | `"/.well-known/heartbeat"` |
-| hpa_cpu_limit         | optional(number) | HPA CPU limit                                        | `80`                       |
-| hpa_memory_limit      | optional(number) | HPA Memory limit                                     | `80`                       |
-| httpPort              | optional(number) | Port on which container runs its services            | `8000`                     |
-| image                 | string           | Docker container image with tag                      |                            |
-| maxCPU                | optional(string) | Maximum CPU resources                                | `"500m"`                   |
-| maxMemory             | optional(string) | Maximum Memory resources                             | `"512Mi"`                  |
-| maxReplicas           | optional(number) | Maximum replicas                                     | `4`                        |
-| metricsPort           | optional(number) | Metrics port on which container runs its services    | `2121`                     |
-| metricsScrapeInterval | optional(string) | Time interval that metrics will be scraped           | `"30s"`                    |
-| minCPU                | optional(string) | Minimum CPU resources                                | `"250m"`                   |
-| minMemory             | optional(string) | Minimum Memory resources                             | `"128Mi"`                  |
-| minReplicas           | optional(number) | Minimum replicas                                     | `2`                        |
-| name                  | optional(string) | Name of the service                                  | `"hello-api"`              |
-| replicaCount          | optional(number) | Number of replicas to run                            | `2`                        |
-| schedule              | optional(string) | Cron job schedule                                    | `""`                       |
-| suspend               | optional(bool)   | Cron job suspend                                     | `false`                    |
 | alerts.custom.alert_rule                                                  | string           | Metric Name exposed by /metric endpoint                                                                                                  | `""`         |
 | alerts.custom.description                                                 | string           | Custom alert if user_created events goes below threshold for 5 min                                                                       | `""`         |
 | alerts.custom.label_value                                                 | optional(string) | Metric Event Name, can be empty string                                                                                                   | `""`         |
@@ -232,10 +210,32 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | alerts.standard.response_time.adaptive_percentile                         | optional(number) | The configurable application response percentile                                                                                         | `0.99`       |
 | alerts.standard.response_time.adaptive_time_window                        | optional(string) | Time window for response alerts                                                                                                          | `"5m"`       |
 | alerts.standard.response_time.reference_time_window                       | optional(string) | Time window total                                                                                                                        | `"3h"`       |
+| cliService            | optional(bool)   | Whether application is a CLI service                 | `false`                    |
+| cluster_name          | string           | Name of the Kubernetes cluster                       |                            |
+| concurrencyPolicy     | optional(string) | Concurrency policy                                   | `"Replace"`                |
 | env.cloud           | optional(string) | Cloud name      | `"GCP"`      |
 | env.HTTP_PORT       | optional(number) | HTTP port       | `8000`       |
 | env.TRACER_URL      | optional(string) | Tracer url      | `""`         |
 | env.TRACER_EXPORTER | optional(string) | Tracer exporter | `""`         |
+| DB_DIALECT            | string           | DB type(ex - mysql, postgresql are valid)            | `""`                       |
+| default_severity      | string           | Default severity level that alerts will be tagged to | `critical`                 |
+| heartbeatURL          | optional(string) | Heartbeat URL                                        | `"/.well-known/heartbeat"` |
+| hpa_cpu_limit         | optional(number) | HPA CPU limit                                        | `80`                       |
+| hpa_memory_limit      | optional(number) | HPA Memory limit                                     | `80`                       |
+| httpPort              | optional(number) | Port on which container runs its services            | `8000`                     |
+| image                 | string           | Docker container image with tag                      |                            |
+| maxCPU                | optional(string) | Maximum CPU resources                                | `"500m"`                   |
+| maxMemory             | optional(string) | Maximum Memory resources                             | `"512Mi"`                  |
+| maxReplicas           | optional(number) | Maximum replicas                                     | `4`                        |
+| metricsPort           | optional(number) | Metrics port on which container runs its services    | `2121`                     |
+| metricsScrapeInterval | optional(string) | Time interval that metrics will be scraped           | `"30s"`                    |
+| minCPU                | optional(string) | Minimum CPU resources                                | `"250m"`                   |
+| minMemory             | optional(string) | Minimum Memory resources                             | `"128Mi"`                  |
+| minReplicas           | optional(number) | Minimum replicas                                     | `2`                        |
+| name                  | optional(string) | Name of the service                                  | `"hello-api"`              |
+| replicaCount          | optional(number) | Number of replicas to run                            | `2`                        |
+| schedule              | optional(string) | Cron job schedule                                    | `""`                       |
+| suspend               | optional(bool)   | Cron job suspend                                     | `false`                    |
 
 #### Note: 
   The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
