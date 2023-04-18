@@ -11,10 +11,10 @@ like harness can use this helm chart to deploy any service to EKS/AKS/GKE cluste
 helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 ```
 
-### Variables
+####  `Values`
 
-| Inputs                | Type             | Description                                          | Default                    |
-|-----------------------|------------------|------------------------------------------------------|----------------------------|
+| Inputs                                                                    | Type             | Description                                                                                                                              | Default      |
+|---------------------------------------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | cliService            | optional(bool)   | Whether application is a CLI service                 | `false`                    |
 | cluster_name          | string           | Name of the Kubernetes cluster                       |                            |
 | concurrencyPolicy     | optional(string) | Concurrency policy                                   | `"Replace"`                |
@@ -37,12 +37,6 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | replicaCount          | optional(number) | Number of replicas to run                            | `2`                        |
 | schedule              | optional(string) | Cron job schedule                                    | `""`                       |
 | suspend               | optional(bool)   | Cron job suspend                                     | `false`                    |
-
-####  `alerts`
-Standard alerts for the resources
-
-| Inputs                                                                    | Type             | Description                                                                                                                              | Default      |
-|---------------------------------------------------------------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | alerts.custom.alert_rule                                                  | string           | Metric Name exposed by /metric endpoint                                                                                                  | `""`         |
 | alerts.custom.description                                                 | string           | Custom alert if user_created events goes below threshold for 5 min                                                                       | `""`         |
 | alerts.custom.label_value                                                 | optional(string) | Metric Event Name, can be empty string                                                                                                   | `""`         |
