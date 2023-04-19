@@ -6,7 +6,7 @@ All the listed values are related to the alerts.
   2. Alerts can be disabled by modifying the threshold value of respective alert to `-1`.
 
 
-| Inputs                                                                    | Type             | Description                                                                                                                               | Default      |
+| Inputs                                                                    | Type             | <div style="width:400px">Description</div>                                                                                                                               | Default      |
 |---------------------------------------------------------------------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | alerts.custom                                                             | list             | For creating the custom alerts you can refer the below table values. It takes the list of values as inputs                                  | `[]`         |
 | alerts.path_method.outbound_request_count.adaptive_reference_time_window  | optional(string) | Reference Time window                                                                                                                     | `"3h"`       |
