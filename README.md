@@ -41,3 +41,7 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | replicaCount                                                              | optional(number) | Number of replicas to run                                                                                                                | `2`                        |
 | schedule                                                                  | optional(string) | Cron job schedule                                                                                                                        | `""`                       |
 | suspend                                                                   | optional(bool)   | Cron job suspend                                                                                                                         | `false`                    |
+
+
+### Note: 
+  To refer readme related to Alerts in Helm template, [click here](./templates/README.md)
