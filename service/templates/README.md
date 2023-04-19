@@ -1,6 +1,11 @@
 ####  `Values`
 All the listed values are related to the alerts.
 
+##### Note:
+  1. The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
+  2. Alerts can be disabled by modifying the threshold value of respective alert to `-1`.
+
+
 | Inputs                                                                    | Type             | Description                                                                                                                               | Default      |
 |---------------------------------------------------------------------------|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | alerts.custom                                                             | list             | For creating the custom alerts you can refer the below table values. It takes the list of values as inputs                                  | `[]`         |
@@ -194,16 +199,14 @@ All the listed values are related to the alerts.
 
 | Inputs          | Type             | Description                                                                       | Default |
 |-----------------|------------------|-----------------------------------------------------------------------------------|---------|
-| alert_rule      | optional(string) | "user_post_get_counter" # Metric Name exposed by /metric endpoint                 |         |
-| description     | optional(string) | Description of custom alert if user_created events goes below threshold for 5 min | `""`    |
-| label_value     | optional(string) | "user_created" # Metric Event Name; can be empty string                           | `""`    |
-| labels.severity | optional(string) | Severity for custom alerts                                                        | `""`    |
-| name            | string           | Name of custom alert if user_created events goes below threshold for 5 min        | `""`    |
-| percentile      | optional(number) | -1.0 #Percentile is useful for histogram queries                                  | `0.0`   |
-| query_operator  | optional(string) | `<=` # Query Operator, by default its `>`                                         | `>`     |
-| sum_by_label    | optional(string) | "events" # Metric events key; can be empty string                                 | `""`    |
+| alert_rule      | optional(string) | Metric Name exposed by /metric endpoint (eg. "user_post_get_counter")                | nil         |
+| description     | optional(string) | Description of custom alert (eg. "alert if user_created events goes below threshold for 5 min") | `""`    |
+| label_value     | optional(string) | Metric Event Name (eg. "user_created")                           | `""`    |
+| labels.severity | optional(string) | Severity for the alert (eg. "critical" or "warning")                              | `""`    |
+| name            | string           | Name of the alert (eg. "custom alert if user_created events goes below threshold for 5 min") | `""`    |
+| percentile      | optional(number) | Percentile is useful for histogram queries (eg. 0.99 percentile)                                 | `0.0`   |
+| query_operator  | optional(string) | Query Operator to compare the thresholds values                                         | `>`     |
+| sum_by_label    | optional(string) | Metric events key (eg. "events")                              | `""`    |
 | time_window     | optional(string) | Time window for the custom alerts                                                 | `""`    |
-| threshold       | optional(number) | Threshold for custom alerts                                                       | `""`    |
+| threshold       | optional(number) | Threshold value for custom alerts                                                       | `""`    |
 
-#### Note:
-The thresholds which has default values as `-1`, the alerts associated to that thresholds will not be created unless the thresholds are modified to a value greater than  `-1`.
