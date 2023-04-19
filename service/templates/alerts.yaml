@@ -137,14 +137,15 @@ spec:
         {{- if ne $v.adaptive_threshold -1.0}}
         - alert: {{ snakecase $.Values.name }}_{{snakecase $k }}_error_adaptive_alerts
           annotations:
-           description: "{{ $.Values.name }} throwing {{ $k }} errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous {{ $v.adaptive_reference_time_window }}"
+           description: "{{ $.Values.name }} throwing {{ $k }} errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous offset 24h"
           {{- if eq $k "5xx"}}
-          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 > {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 > {{ $v.adaptive_threshold }}
           {{- else if eq $k "201"}}
-          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 < {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 < {{ $v.adaptive_threshold }}
           {{- else }}
-          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 > {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 > {{ $v.adaptive_threshold }}
           {{- end }}
+          offset: 24h
           labels:
             severity: {{ $v.severity_level | default "warning"}}
             servicealert: "true"
@@ -194,14 +195,15 @@ spec:
         {{- if ne $v.adaptive_threshold -1.0}}
         - alert: {{ snakecase $.Values.name }}_{{snakecase $k }}_error_adaptive_alerts
           annotations:
-            description: "{{ $.Values.name }} throwing {{ $k }} outbound errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous {{ $v.adaptive_reference_time_window }}"
+            description: "{{ $.Values.name }} throwing {{ $k }} outbound errors {{ $v.adaptive_threshold }}% in last {{ $v.adaptive_time_window }} over previous offset 24h"
           {{- if eq $k "5xx"}}
-          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 > {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status=~"5..",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 > {{ $v.adaptive_threshold }}
           {{- else if eq $k "201"}}
-          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 < {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 < {{ $v.adaptive_threshold }}
           {{- else }}
-          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}]))/sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_reference_time_window }}]))) * 100) - 100 > {{ $v.adaptive_threshold }}
+          expr: ((sum(rate(zs_http_service_response_count{ namespace="{{ $.Release.Namespace }}",status="{{ $k }}",service="{{ $.Values.name }}"}[{{ $v.adaptive_time_window }}])) offset 24h) * 100) - 100 > {{ $v.adaptive_threshold }}
             {{- end }}
+          offset: 24h
           labels:
             severity: {{ $v.severity_level | default "warning"}}
             servicealert: "true"
@@ -238,8 +240,9 @@ spec:
         {{- if ne .Values.alerts.standard.response_time.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_response_time
           annotations:
-            description: "{{ .Values.name }} {{ .Values.alerts.standard.response_time.adaptive_percentile}}ile {{.Values.alerts.standard.response_time.adaptive_threshold}}% higher for last {{.Values.alerts.standard.response_time.adaptive_time_window}} over previous {{.Values.alerts.standard.response_time.adaptive_reference_time_window}}"
-          expr:  ((histogram_quantile({{.Values.alerts.standard.response_time.adaptive_percentile}}, sum(rate(zs_http_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.response_time.adaptive_time_window }}])) by (le)))/(histogram_quantile({{.Values.alerts.standard.response_time.adaptive_percentile }}, sum(rate(zs_http_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.response_time.adaptive_reference_time_window }}])) by (le)))* 100) - 100 > {{ .Values.alerts.standard.response_time.adaptive_threshold }}
+            description: "{{ .Values.name }} {{ .Values.alerts.standard.response_time.adaptive_percentile}}ile {{.Values.alerts.standard.response_time.adaptive_threshold}}% higher for last {{.Values.alerts.standard.response_time.adaptive_time_window}} over previous offset 24h"
+          expr:  ((histogram_quantile({{.Values.alerts.standard.response_time.adaptive_percentile}}, sum(rate(zs_http_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.response_time.adaptive_time_window }}])) by (le))) offset 24h) * 100) - 100) > {{ .Values.alerts.standard.response_time.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
@@ -275,8 +278,9 @@ spec:
         {{- if ne .Values.alerts.standard.outbound_response_time.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_outbound_response_time
           annotations:
-            description: "{{ .Values.name }} {{ .Values.alerts.standard.outbound_response_time.adaptive_percentile}}ile {{.Values.alerts.standard.outbound_response_time.adaptive_threshold}}% higher for last {{.Values.alerts.standard.outbound_response_time.adaptive_time_window}} over previous {{.Values.alerts.standard.outbound_response_time.adaptive_reference_time_window}}"
-          expr:  ((histogram_quantile({{.Values.alerts.standard.outbound_response_time.adaptive_percentile}}, sum(rate(zs_http_service_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_response_time.adaptive_time_window }}])) by (le)))/(histogram_quantile({{.Values.alerts.standard.outbound_response_time.adaptive_percentile }}, sum(rate(zs_http_service_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_response_time.adaptive_reference_time_window }}])) by (le)))* 100) - 100 > {{ .Values.alerts.standard.outbound_response_time.adaptive_threshold }}
+            description: "{{ .Values.name }} {{ .Values.alerts.standard.outbound_response_time.adaptive_percentile}}ile {{.Values.alerts.standard.outbound_response_time.adaptive_threshold}}% higher for last {{.Values.alerts.standard.outbound_response_time.adaptive_time_window}} over previous offset 24h"
+          expr:  ((histogram_quantile({{.Values.alerts.standard.outbound_response_time.adaptive_percentile}}, sum(rate(zs_http_service_response_bucket{ namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_response_time.adaptive_time_window }}])) by (le))) offset 24h)* 100) - 100) > {{ .Values.alerts.standard.outbound_response_time.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
@@ -288,8 +292,9 @@ spec:
         {{- if ne .Values.alerts.standard.request_count.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_request_count_higher_threshold
           annotations:
-            description: "{{ .Values.name }} request count {{.Values.alerts.standard.request_count.adaptive_threshold }}% higher for last {{.Values.alerts.standard.request_count.adaptive_time_window}} over pervious {{.Values.alerts.standard.request_count.adaptive_reference_time_window}}"
-          expr: ((avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_time_window }}]))/avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_reference_time_window }}]))) * 100) > 100 + {{ .Values.alerts.standard.request_count.adaptive_threshold }}
+            description: "{{ .Values.name }} request count {{.Values.alerts.standard.request_count.adaptive_threshold }}% higher for last {{.Values.alerts.standard.request_count.adaptive_time_window}} over previous offset 24h"
+          expr: ((avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_time_window }}])) offset 24h) * 100) > 100 + {{ .Values.alerts.standard.request_count.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
@@ -300,8 +305,9 @@ spec:
         {{- if ne .Values.alerts.standard.request_count.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_request_count_lower_threshold
           annotations:
-            description: "{{ .Values.name }} request count {{.Values.alerts.standard.request_count.adaptive_threshold}}% lower for last {{.Values.alerts.standard.request_count.adaptive_time_window}} over pervious {{.Values.alerts.standard.request_count.adaptive_reference_time_window}}"
-          expr: ((avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_time_window }}]))/avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_reference_time_window }}]))) * 100) < 100 - {{ .Values.alerts.standard.request_count.adaptive_threshold }}
+            description: "{{ .Values.name }} request count {{.Values.alerts.standard.request_count.adaptive_threshold}}% lower for last {{.Values.alerts.standard.request_count.adaptive_time_window}} over previous offset 24h"
+          expr: ((avg(rate(zs_http_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.request_count.adaptive_time_window }}])) offset 24h) * 100) < 100 - {{ .Values.alerts.standard.request_count.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
@@ -312,8 +318,9 @@ spec:
         {{- if ne .Values.alerts.standard.outbound_request_count.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_outbound_request_count_higher_threshold
           annotations:
-            description: "apps throwing {{ .Values.name }} outbound request count {{.Values.alerts.standard.outbound_request_count.adaptive_threshold}}% higher for last {{.Values.alerts.standard.outbound_request_count.adaptive_time_window}} over pervious {{.Values.alerts.standard.outbound_request_count.adaptive_reference_time_window}}"
-          expr: ((avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_time_window }}]))/avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_reference_time_window }}]))) * 100) > 100 + {{ .Values.alerts.standard.outbound_request_count.adaptive_threshold }}
+            description: "apps throwing {{ .Values.name }} outbound request count {{.Values.alerts.standard.outbound_request_count.adaptive_threshold}}% higher for last {{.Values.alerts.standard.outbound_request_count.adaptive_time_window}} over previous offset 24h"
+          expr: ((avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_time_window }}])) offset 24h) * 100) > 100 + {{ .Values.alerts.standard.outbound_request_count.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
@@ -324,8 +331,9 @@ spec:
         {{- if ne .Values.alerts.standard.outbound_request_count.adaptive_threshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_adaptive_alerts_application_outbound_request_count_lower_threshold
           annotations:
-            description: "apps throwing {{ .Values.name }} outbound request count {{.Values.alerts.standard.outbound_request_count.adaptive_threshold}}% lower for last {{.Values.alerts.standard.outbound_request_count.adaptive_time_window}} over pervious {{.Values.alerts.standard.outbound_request_count.adaptive_reference_time_window}}"
-          expr: ((avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_time_window }}]))/avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_reference_time_window }}]))) * 100) < 100 - {{ .Values.alerts.standard.outbound_request_count.adaptive_threshold }}
+            description: "apps throwing {{ .Values.name }} outbound request count {{.Values.alerts.standard.outbound_request_count.adaptive_threshold}}% lower for last {{.Values.alerts.standard.outbound_request_count.adaptive_time_window}} over previous offset 24h"
+          expr: ((avg(rate(zs_http_service_response_count{namespace="{{ .Release.Namespace }}",service="{{ .Values.name }}" }[{{ .Values.alerts.standard.outbound_request_count.adaptive_time_window }}])) offset 24h) * 100) < 100 - {{ .Values.alerts.standard.outbound_request_count.adaptive_threshold }}
+          offset: 24h
           labels:
             severity: warning
             servicealert: "true"
