@@ -44,4 +44,4 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 
 
 ### Note: 
-  To refer readme related to Alerts in Helm template, [click here](./service/templates/README.md)
+  To refer readme related to Alerts in Helm template, [click here](README1.md)
