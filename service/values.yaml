@@ -37,7 +37,7 @@ default_severity: "critical"
 
 # All environment variables can be passed as a map
 env:
-  cloud: "GCP"
+  cloud:
   HTTP_PORT: 8000
   TRACER_URL:
   TRACER_EXPORTER:
