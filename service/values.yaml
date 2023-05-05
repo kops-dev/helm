@@ -45,9 +45,9 @@ env:
 cluster_name:
 db_env:
   DB_DIALECT: ""
-  DB_NAME: "{{ .Values.name}}"
+  DB_NAME: "{{ .Values.name }}"
   DB_HOST: "{{ .Release.Namespace }}-sql.db"
-  DB_USERNAME: "{{ .Values.name}}_user"
+  DB_USERNAME: "{{ .Values.name }}_user"
   DB_PORT: ""
   DB_PASSWORD: ""
 
