@@ -71,16 +71,18 @@ spec:
             {{- if ne .Values.db_env.DB_DIALECT ""}}
             {{- range $k,$v := .Values.db_env  }}
             {{- if and (eq $k "DB_PASSWORD") (eq $v "")}}
-            - name: DB_PASSWORD
+            - name: {{ $k }}
               valueFrom:
                 secretKeyRef:
-                  name: "application-secrets"
-                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-{{ $.Values.db_env.DB_NAME }}-db-secret"
-            {{- else if (eq $k "DB_PORT") }}
-            {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
+                  name: {{ $.Values.secret_key_reference }}
+                  key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
+            {{ else if (eq $k "DB_DIALECT") }}
+            - name: {{ $k }}
+              value: {{ $v }}
+            {{- if (eq $v "postgres") }}
             - name: DB_PORT
               value: "5432"
-            {{- else if (eq $.Values.db_env.DB_DIALECT "mysql") }}
+            {{- else if (eq $v "mysql") }}
             - name: DB_PORT
               value: "3306"
             {{- end }}
