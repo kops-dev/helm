@@ -69,28 +69,29 @@ spec:
                   key:  {{ $v | quote }}
             {{- end }}
             {{- if ne .Values.db_env.DB_DIALECT ""}}
-            {{- range $k,$v := .Values.db_env  }}
-            {{- if and (eq $k "DB_PASSWORD") (eq $v "")}}
-            - name: {{ $k }}
+              {{- range $k,$v := .Values.db_env  }}
+                {{- if and (eq $k "DB_PASSWORD") (eq $v "")}}
+            - name: {{ $k | quote}}
               valueFrom:
                 secretKeyRef:
                   name: {{ $.Values.secret_key_reference }}
                   key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
-            {{ else if (eq $k "DB_DIALECT") }}
-            - name: {{ $k }}
-              value: {{ $v }}
-            {{- if (eq $v "postgres") }}
-            - name: DB_PORT
+                {{- else if and (eq $k "DB_PORT") (eq ($v | toString) "") }}
+                  {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
+            - name: {{ $k | quote}}
               value: "5432"
-            {{- else if (eq $v "mysql") }}
-            - name: DB_PORT
+                  {{- else if (eq $.Values.db_env.DB_DIALECT "mysql") }}
+            - name: {{ $k | quote}}
               value: "3306"
-            {{- end }}
-            {{- else }}
+                  {{- end }}
+                {{- else if and (eq $k "DB_PORT") (ne ($v | toString) "") }}
+            - name: {{ $k | quote}}
+              value: {{ $v }}
+                {{- else }}
             - name: {{ $k | quote }}
               value: {{ tpl $v $}}
-            {{- end }}
-            {{- end }}
+                {{- end }}
+              {{- end }}
             {{- end }}
           {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
           # Volume mount is required for the secret to sync with kubernetes secret
@@ -116,10 +117,10 @@ spec:
               path: {{ .Values.heartbeatURL | quote}}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: {{ (.Values.readinessProbe).initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ (.Values.readinessProbe).timeoutSeconds | default 3 }}
+            periodSeconds: {{ (.Values.readinessProbe).periodSeconds |default 10 }}
+            failureThreshold: {{ (.Values.readinessProbe).failureThreshold | default 3 }}
           livenessProbe:
             {{- if .Values.cliService }}
             exec:
@@ -130,9 +131,9 @@ spec:
               path: {{ .Values.heartbeatURL | quote }}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: {{ (.Values.livenessProbe).initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ (.Values.livenessProbe).timeoutSeconds | default 3 }}
+            periodSeconds: {{ (.Values.livenessProbe).periodSeconds | default 10 }}
+            failureThreshold: {{ (.Values.livenessProbe).failureThreshold | default 3 }}
 ---
   {{- end -}}
