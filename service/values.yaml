@@ -46,16 +46,13 @@ db_env:
   DB_DIALECT: ""
   DB_NAME: "{{ .Values.name }}"
   DB_HOST: "{{ .Release.Namespace }}-sql.db"
-  DB_USERNAME: "{{ .Values.name }}_user"
+  DB_USER: "{{ .Values.name }}_user"
   DB_PASSWORD: ""
   DB_PORT: ""
 
 cluster_name:
 secret_key_reference: "application-secrets"
 DB_PASSWORD_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-{{ tpl .Values.db_env.DB_NAME . }}-db-secret"
-
-readinessProbe:
-livenessProbe:
 
 secrets:
   # DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable:

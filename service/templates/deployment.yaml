@@ -76,7 +76,7 @@ spec:
                 secretKeyRef:
                   name: {{ $.Values.secret_key_reference }}
                   key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
-                {{- else if and (eq $k "DB_PORT") (eq ($v | toString) "") }}
+                {{- else if and (eq $k "DB_PORT") (eq ( $v| toString) "") }}
                   {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
             - name: {{ $k | quote}}
               value: "5432"
@@ -84,12 +84,9 @@ spec:
             - name: {{ $k | quote}}
               value: "3306"
                   {{- end }}
-                {{- else if and (eq $k "DB_PORT") (ne ($v | toString) "") }}
-            - name: {{ $k | quote}}
-              value: {{ $v }}
                 {{- else }}
             - name: {{ $k | quote }}
-              value: {{ tpl $v $}}
+              value: {{ tpl $v  $ | quote}}
                 {{- end }}
               {{- end }}
             {{- end }}
