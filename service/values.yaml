@@ -47,15 +47,16 @@ db_env:
   DB_NAME: "{{ .Values.name }}"
   DB_HOST: "{{ .Release.Namespace }}-sql.db"
   DB_USER: "{{ .Values.name }}_user"
-  DB_PASSWORD: ""
+  DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
   DB_PORT: ""
 
 cluster_name:
 secret_key_reference: "application-secrets"
+# DB_PASSWORD_KEY contains a template format of secret-name to fetch the value from the secrets providers
 DB_PASSWORD_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-{{ tpl .Values.db_env.DB_NAME . }}-db-secret"
 
 secrets:
-  # DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable:
+  # APP_KEY: zs-test-dev-default-APP_KEY-secret      # Secrets will be in the format env_variable:
 alerts:
   standard:
     infra:
