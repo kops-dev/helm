@@ -18,7 +18,7 @@ spec:
     spec:
       imagePullSecrets:
       - name: gcr-json-key
-      {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
+      {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
       serviceAccountName: secrets-account
       volumes:
         - name: app-secrets
@@ -68,23 +68,30 @@ spec:
                   name: "application-secrets"
                   key:  {{ $v | quote }}
             {{- end }}
-            {{- if ne .Values.DB_DIALECT "" }}
-            - name: DB_HOST
-              value: "{{ $.Release.Namespace }}-sql.db"
-            - name: DB_PORT
-              value: "5432"
-            - name: DB_USER
-              value: "{{ $.Values.DB_USER }}"
-            - name: DB_DIALECT
-              value: {{ .Values.DB_DIALECT }}
-            - name: DB_PASSWORD
+            {{- if ne .Values.db_env.DB_DIALECT ""}}
+              {{- range $k,$v := .Values.db_env  }}
+                {{- if and (eq $k "DB_PASSWORD") (eq $v "")}}
+            - name: {{ $k | quote}}
               valueFrom:
                 secretKeyRef:
-                  name: "application-secrets"
-                  key: "{{ $.Values.cluster_name }}-{{ $.Release.Namespace }}-{{ $.Values.DB_NAME }}-db-secret"
+                  name: {{ $.Values.secret_key_reference }}
+                  key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
+                {{- else if and (eq $k "DB_PORT") (eq ( $v| toString) "") }}
+                  {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
+            - name: {{ $k | quote}}
+              value: "5432"
+                  {{- else if (eq $.Values.db_env.DB_DIALECT "mysql") }}
+            - name: {{ $k | quote}}
+              value: "3306"
+                  {{- end }}
+                {{- else }}
+            - name: {{ $k | quote }}
+              value: {{ tpl $v  $ | quote}}
+                {{- end }}
+              {{- end }}
             {{- end }}
-          {{- if or  (.Values.secrets) (ne .Values.DB_DIALECT "") }}
-          # Volume mount is required for the GCP secret to sync with kubernetes secret
+          {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
+          # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
@@ -107,10 +114,10 @@ spec:
               path: {{ .Values.heartbeatURL | quote}}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: {{ (.Values.readinessProbe).initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ (.Values.readinessProbe).timeoutSeconds | default 3 }}
+            periodSeconds: {{ (.Values.readinessProbe).periodSeconds |default 10 }}
+            failureThreshold: {{ (.Values.readinessProbe).failureThreshold | default 3 }}
           livenessProbe:
             {{- if .Values.cliService }}
             exec:
@@ -121,9 +128,9 @@ spec:
               path: {{ .Values.heartbeatURL | quote }}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: 3
-            timeoutSeconds: 3
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: {{ (.Values.livenessProbe).initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ (.Values.livenessProbe).timeoutSeconds | default 3 }}
+            periodSeconds: {{ (.Values.livenessProbe).periodSeconds | default 10 }}
+            failureThreshold: {{ (.Values.livenessProbe).failureThreshold | default 3 }}
 ---
   {{- end -}}
