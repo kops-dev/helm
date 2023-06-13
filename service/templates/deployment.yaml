@@ -76,6 +76,12 @@ spec:
                 secretKeyRef:
                   name: {{ $.Values.secret_key_reference }}
                   key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
+                {{- else if and (eq $k "DB_USER") (eq $v "") }}
+            - name: {{ $k | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.secret_key_reference }}
+                  key: {{ tpl $.Values.DB_USERNAME_KEY $ }}
                 {{- else if and (eq $k "DB_PORT") (eq ( $v| toString) "") }}
                   {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
             - name: {{ $k | quote}}
