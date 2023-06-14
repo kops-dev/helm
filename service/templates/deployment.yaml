@@ -28,11 +28,15 @@ spec:
             volumeAttributes:
               secretProviderClass: "secrets-application"
         - name: client-ssl-volume
-          secret:
-            secretName: client-ssl
+          valueFrom:
+            secretKeyRef:
+              name: "application-secrets"
+              key: {{ .Values.CLIENT_KEY }}
         - name: private-key-volume
-          secret:
-            secretName: private-key
+          valueFrom:
+            secretKeyRef:
+              name: "application-secrets"
+              key: {{ .Values.PRIVATE_KEY }}
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
