@@ -84,12 +84,6 @@ spec:
             - name: {{ $k | quote}}
               value: "3306"
                   {{- end }}
-                {{- else if and (eq $k "CERTIFICATE_FILE") (eq $v "") }}
-            - name: {{ $k | quote }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.secret_key_reference }}
-                  key: {{ tpl $.Values.SERVER_KEY $}}
                 {{- else if and (eq $k "DB_CERTIFICATE_FILE") (eq $v "") }}
             - name: {{ $k | quote }}
               valueFrom:

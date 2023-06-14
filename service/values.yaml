@@ -50,7 +50,6 @@ db_env:
   DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
   DB_PORT: ""
   DB_SSL: "verify-ca"
-  CERTIFICATE_FILE: ""
   DB_CERTIFICATE_FILE: ""
   DB_KEY_FILE: ""
 
@@ -58,7 +57,6 @@ cluster_name:
 secret_key_reference: "application-secrets"
 # DB_PASSWORD_KEY contains a template format of secret-name to fetch the value from the secrets providers
 DB_PASSWORD_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-{{ tpl .Values.db_env.DB_NAME . }}-db-secret"
-SERVER_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-server-certificate"
 CLIENT_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-client-certificate"
 PRIVATE_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-client-key"
 
