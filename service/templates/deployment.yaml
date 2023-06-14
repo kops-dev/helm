@@ -33,6 +33,7 @@ spec:
         - name: private-key-volume
           secret:
             secretName: private-key
+            defaultMode: 0o600
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
