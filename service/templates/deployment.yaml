@@ -27,6 +27,12 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "secrets-application"
+        - name: client-ssl-volume
+          secret:
+            secretName: client-ssl
+        - name: private-key-volume
+          secret:
+            secretName: private-key
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
@@ -86,16 +92,10 @@ spec:
                   {{- end }}
                 {{- else if and (eq $k "DB_CERTIFICATE_FILE") (eq $v "") }}
             - name: {{ $k | quote }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.secret_key_reference }}
-                  key: {{ tpl $.Values.CLIENT_KEY $}}
+              value: /etc/ssl/client/client.pem
                 {{- else if and (eq $k "DB_KEY_FILE") (eq $v "") }}
             - name: {{ $k | quote }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.secret_key_reference }}
-                  key: {{ tpl $.Values.PRIVATE_KEY $}}
+              value: /etc/ssl/private/private.pem
                 {{- else }}
             - name: {{ $k | quote }}
               value: {{ tpl $v  $ | quote}}
@@ -108,6 +108,10 @@ spec:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
+            - name: client-ssl-volume
+              mountPath: /etc/ssl/client
+            - name: private-key-volume
+              mountPath: /etc/ssl/private
           {{- end }}
           resources:
             requests:
