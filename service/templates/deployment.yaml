@@ -27,6 +27,18 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "secrets-application"
+#        - name: client-ssl
+#          csi:
+#            driver: secrets-store.csi.k8s.io
+#            readOnly: true
+#            volumeAttributes:
+#              secretProviderClass: "secrets-application"
+#        - name: private-ssl
+#          csi:
+#            driver: secrets-store.csi.k8s.io
+#            readOnly: true
+#            volumeAttributes:
+#              secretProviderClass: "secrets-application"
         - name: client-ssl-volume
           valueFrom:
             secretKeyRef:
