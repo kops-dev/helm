@@ -49,16 +49,12 @@ db_env:
   DB_USER: "{{ .Values.name }}_user"
   DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
   DB_PORT: ""
-  DB_SSL: "verify-ca"
-  DB_CERTIFICATE_FILE: ""
-  DB_KEY_FILE: ""
+  DB_SSL: "require"
 
 cluster_name:
 secret_key_reference: "application-secrets"
 # DB_PASSWORD_KEY contains a template format of secret-name to fetch the value from the secrets providers
 DB_PASSWORD_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-{{ tpl .Values.db_env.DB_NAME . }}-db-secret"
-CLIENT_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-client-certificate"
-PRIVATE_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-client-key"
 
 secrets:
   # APP_KEY: zs-test-dev-default-APP_KEY-secret      # Secrets will be in the format env_variable:
