@@ -30,7 +30,7 @@ spec:
         - name: ssl-secrets
           secret:
             secretName: ssl-certs
-            defaultMode: 0o600
+            defaultMode: 0o640
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
