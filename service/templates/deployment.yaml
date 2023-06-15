@@ -27,12 +27,9 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "secrets-application"
-        - name: client-ssl-volume
+        - name: ssl-secrets
           secret:
-            secretName: client-ssl
-        - name: private-key-volume
-          secret:
-            secretName: private-key
+            secretName: ssl-certs
             defaultMode: 0o600
       {{- end }}
       {{- if .Values.initContainer }}
@@ -91,17 +88,15 @@ spec:
             - name: {{ $k | quote}}
               value: "3306"
                   {{- end }}
-                {{- else if and (eq $k "DB_CERTIFICATE_FILE") (eq $v "") }}
-            - name: {{ $k | quote }}
-              value: /etc/ssl/client/client.pem
-                {{- else if and (eq $k "DB_KEY_FILE") (eq $v "") }}
-            - name: {{ $k | quote }}
-              value: /etc/ssl/private/private.pem
                 {{- else }}
             - name: {{ $k | quote }}
               value: {{ tpl $v  $ | quote}}
                 {{- end }}
               {{- end }}
+            - name: DB_CERTIFICATE_FILE
+              value: /etc/ssl/client.pem
+            - name: DB_KEY_FILE
+              value: /etc/ssl/private.pem
             {{- end }}
           {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
           # Volume mount is required for the secret to sync with kubernetes secret
@@ -109,10 +104,8 @@ spec:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
-            - name: client-ssl-volume
-              mountPath: /etc/ssl/client
-            - name: private-key-volume
-              mountPath: /etc/ssl/private
+            - name: ssl-secrets
+              mountPath: /etc/ssl
           {{- end }}
           resources:
             requests:
