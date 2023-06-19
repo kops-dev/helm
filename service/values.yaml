@@ -49,8 +49,8 @@ db_env:
   DB_USER: "{{ .Values.name }}_user"
   DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
   DB_PORT: ""
-  DB_SSL: "require"
-  ENABLE_SSL: "false"
+  DB_SSL: ""
+  ENABLE_SSL: ""
 
 cluster_name:
 secret_key_reference: "application-secrets"
