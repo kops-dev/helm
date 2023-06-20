@@ -37,23 +37,15 @@ default_severity: "critical"
 
 # All environment variables can be passed as a map
 env:
-  cloud:
-  HTTP_PORT: 8000
-  TRACER_URL:
-  TRACER_EXPORTER:
-
-db_env:
   DB_DIALECT: ""
-  DB_NAME: "{{ .Values.name }}"
-  DB_HOST: "{{ .Release.Namespace }}-sql.db"
-  DB_USER: "{{ .Values.name }}_user"
-  DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
+  DB_NAME: ""
+  DB_HOST: ""
+  DB_USER: ""
+  DB_PASSWORD: ""
   DB_PORT: ""
 
-cluster_name:
+config_map_reference: "{{tpl .Values.name . }}-config-map"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
-# DB_PASSWORD_KEY contains a template format of secret-name to fetch the value from the secrets providers
-#DB_PASSWORD_KEY: "{{ .Values.cluster_name }}-{{ .Release.Namespace }}-{{ tpl .Values.db_env.DB_NAME . }}-db-secret"
 
 secrets:
   # APP_KEY: zs-test-dev-default-APP_KEY-secret      # Secrets will be in the format env_variable:

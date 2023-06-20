@@ -18,7 +18,7 @@ spec:
     spec:
       imagePullSecrets:
       - name: gcr-json-key
-      {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
+      {{- if ne .Values.secret_key_reference "" }}
       serviceAccountName: secrets-account
       volumes:
         - name: app-secrets
@@ -57,30 +57,20 @@ spec:
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
           envFrom:
+            {{- if ne .Values.secret_key_reference "" }}
             - secretRef:
                 name: {{ tpl $.Values.secret_key_reference $}}
+            {{- end }}
+            - configMapRef:
+                name: {{ tpl $.Values.config_map_reference $}}
           env:
             {{- range $k,$v := .Values.env }}
+              {{- if ne $v ""}}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
-            {{- end }}
-            {{- if ne .Values.db_env.DB_DIALECT ""}}
-              {{- range $k,$v := .Values.db_env  }}
-                {{- if and (eq $k "DB_PORT") (eq ( $v| toString) "") }}
-                  {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
-            - name: {{ $k | quote}}
-              value: "5432"
-                  {{- else if (eq $.Values.db_env.DB_DIALECT "mysql") }}
-            - name: {{ $k | quote}}
-              value: "3306"
-                  {{- end }}
-                {{- else if ne $v "" }}
-            - name: {{ $k | quote }}
-              value: {{ tpl $v  $ | quote}}
-                {{- end }}
               {{- end }}
             {{- end }}
-          {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
+          {{- if ne .Values.secret_key_reference "" }}
           # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
