@@ -27,7 +27,7 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "secrets-application"
-      {{- if  and (eq .Values.db_env.ENABLE_SSL "true") (ne .Values.db_env.DB_DIALECT "mysql") }}
+      {{- if eq .Values.db_env.ENABLE_SSL "true" }}
         - name: ssl-secrets
           secret:
             secretName: ssl-certs
@@ -95,7 +95,7 @@ spec:
               value: {{ tpl $v  $ | quote}}
                 {{- end }}
               {{- end }}
-            {{- if  and (eq .Values.db_env.ENABLE_SSL "true") (ne .Values.db_env.DB_DIALECT "mysql") }}
+            {{- if eq .Values.db_env.ENABLE_SSL "true" }}
             - name: DB_CERTIFICATE_FILE
               value: /etc/ssl/client.pem
             - name: DB_KEY_FILE
@@ -108,7 +108,7 @@ spec:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
-          {{- if  and (eq .Values.db_env.ENABLE_SSL "true") (ne .Values.db_env.DB_DIALECT "mysql") }}
+          {{- if eq .Values.db_env.ENABLE_SSL "true" }}
             - name: ssl-secrets
               mountPath: /etc/ssl
           {{- end }}
