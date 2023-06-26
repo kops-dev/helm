@@ -37,12 +37,7 @@ default_severity: "critical"
 
 # All environment variables can be passed as a map
 env:
-  DB_DIALECT: ""
-  DB_NAME: ""
-  DB_HOST: ""
-  DB_USER: ""
-  DB_PASSWORD: ""
-  DB_PORT: ""
+  HTTP_PORT: 8000
 
 config_map_reference: "{{tpl .Values.name . }}-config-map"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
