@@ -65,7 +65,7 @@ spec:
                 name: {{ tpl $.Values.config_map_reference $}}
           env:
             {{- range $k,$v := .Values.env }}
-              {{- if ne $v ""}}
+              {{- if ne (toString $v) ""}}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
               {{- end }}
