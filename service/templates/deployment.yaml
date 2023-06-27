@@ -18,7 +18,7 @@ spec:
     spec:
       imagePullSecrets:
       - name: gcr-json-key
-      {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
+      {{- if ne .Values.secret_key_reference "" }}
       serviceAccountName: secrets-account
       volumes:
         - name: app-secrets
@@ -26,7 +26,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "secrets-application"
+              secretProviderClass: "{{ .Values.name }}-secrets-application"
       {{- end }}
       {{- if .Values.initContainer }}
       initContainers:
@@ -44,7 +44,7 @@ spec:
             - name: {{ $k | quote }}
               valueFrom:
                 secretKeyRef:
-                  name: "application-secrets"
+                  name: {{tpl .Values.secret_key_reference}}
                   key:  {{ $v | quote }}
       {{- end }}
       {{- end }}
@@ -56,41 +56,21 @@ spec:
               containerPort: {{ .Values.httpPort }}
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
+          envFrom:
+            {{- if ne .Values.secret_key_reference "" }}
+            - secretRef:
+                name: {{ tpl $.Values.secret_key_reference $}}
+            {{- end }}
+            - configMapRef:
+                name: {{ tpl $.Values.config_map_reference $}}
           env:
             {{- range $k,$v := .Values.env }}
+              {{- if ne (toString $v) ""}}
             - name: {{ $k | quote }}
               value: {{ $v | quote }}
-            {{- end }}
-            {{- range $k,$v := .Values.secrets }}
-            - name: {{ $k | quote }}
-              valueFrom:
-                secretKeyRef:
-                  name: "application-secrets"
-                  key:  {{ $v | quote }}
-            {{- end }}
-            {{- if ne .Values.db_env.DB_DIALECT ""}}
-              {{- range $k,$v := .Values.db_env  }}
-                {{- if and (eq $k "DB_PASSWORD") (eq $v "")}}
-            - name: {{ $k | quote}}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.secret_key_reference }}
-                  key: {{ tpl $.Values.DB_PASSWORD_KEY $}}
-                {{- else if and (eq $k "DB_PORT") (eq ( $v| toString) "") }}
-                  {{- if (eq $.Values.db_env.DB_DIALECT "postgres") }}
-            - name: {{ $k | quote}}
-              value: "5432"
-                  {{- else if (eq $.Values.db_env.DB_DIALECT "mysql") }}
-            - name: {{ $k | quote}}
-              value: "3306"
-                  {{- end }}
-                {{- else }}
-            - name: {{ $k | quote }}
-              value: {{ tpl $v  $ | quote}}
-                {{- end }}
               {{- end }}
             {{- end }}
-          {{- if or  (.Values.secrets) (ne .Values.db_env.DB_DIALECT "") }}
+          {{- if ne .Values.secret_key_reference "" }}
           # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
