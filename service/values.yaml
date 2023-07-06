@@ -38,14 +38,6 @@ default_severity: "critical"
 # All environment variables can be passed as a map
 env:
   HTTP_PORT: 8000
-
-db_env:
-  DB_DIALECT: ""
-  DB_NAME: "{{ .Values.name }}"
-  DB_HOST: "{{ .Release.Namespace }}-sql.db"
-  DB_USER: "{{ .Values.name }}_user"
-  DB_PASSWORD: ""  # DB_PASSWORD should be plain-text given by user to override the value from secrets provider. If not given DB_PASSWORD_KEY will be used.
-  DB_PORT: ""
   DB_SSL: ""
   ENABLE_SSL: ""
 
