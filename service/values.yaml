@@ -38,9 +38,12 @@ default_severity: "critical"
 # All environment variables can be passed as a map
 env:
   HTTP_PORT: 8000
+  DB_SSL: ""
+  ENABLE_SSL: ""
 
 config_map_reference: "{{tpl .Values.name . }}-config-map"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
+
 
 alerts:
   standard:
