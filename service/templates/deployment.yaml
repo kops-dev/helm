@@ -27,7 +27,7 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "{{ .Values.name }}-secrets-application"
-      {{- if eq .Values.env.ENABLE_SSL "true" }}
+      {{- if eq .Values.env.DB_ENABLE_SSL "true" }}
         - name: ssl-secrets
           secret:
             secretName: ssl-certs
@@ -76,19 +76,13 @@ spec:
               value: {{ $v | quote }}
               {{- end }}
             {{- end }}
-              {{- if eq .Values.env.ENABLE_SSL "true" }}
-            - name: DB_CERTIFICATE_FILE
-              value: /etc/ssl/client.pem
-            - name: DB_KEY_FILE
-              value: /etc/ssl/private.pem
-              {{- end }}
           {{- if ne .Values.secret_key_reference "" }}
           # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
-          {{- if eq .Values.env.ENABLE_SSL "true" }}
+          {{- if eq .Values.env.DB_ENABLE_SSL "true" }}
             - name: ssl-secrets
               mountPath: /etc/ssl
           {{- end }}
