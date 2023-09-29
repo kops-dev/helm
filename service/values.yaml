@@ -20,7 +20,7 @@ maxCPU: "500m"
 maxMemory: "512Mi"
 minReplicas: 1
 maxReplicas: 4
-hpa_cpu_limit: 200
+hpa_cpu_limit: 250
 hpa_memory_limit: 80
 
 # Whether application is a CLI service
