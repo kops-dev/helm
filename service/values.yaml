@@ -14,13 +14,13 @@ metricsPort: 2121
 metricsScrapeInterval: 30s
 
 # Resource allocations
-minCPU: "250m"
+minCPU: "100m"
 minMemory: "128Mi"
 maxCPU: "500m"
 maxMemory: "512Mi"
-minReplicas: 2
+minReplicas: 1
 maxReplicas: 4
-hpa_cpu_limit: 80
+hpa_cpu_limit: 200
 hpa_memory_limit: 80
 
 # Whether application is a CLI service
