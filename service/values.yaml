@@ -5,7 +5,7 @@ name: hello-api
 replicaCount: 2
 
 # Docker container image with tag
-image:
+image: "manasa2210/sample-app:v0.0.2"
 
 # Port on which container runs its services
 httpPort: 8000
