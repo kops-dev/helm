@@ -18,7 +18,7 @@ minCPU: "100m"
 minMemory: "128Mi"
 maxCPU: "500m"
 maxMemory: "512Mi"
-minReplicas: 1
+minReplicas: 2
 maxReplicas: 4
 hpa_cpu_limit: 250
 hpa_memory_limit: 80
