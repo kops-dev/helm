@@ -63,39 +63,43 @@ alerts:
         absolute_time_window: "5m"                        # Time window for bad_request_threshold ,default "5m"
         percentage_threshold: 70                          # Alert if the 400 response code errors in application goes beyond 70 percent in a given time window.
         percentage_time_window: "5m"                      # Time window for bad_request_percentage_threshold ,default "5m"
-        adaptive_threshold: 15                            # Alert if the 400 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the 400 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Reference Time window  ,default "24h"
         adaptive_reference_time_window: "3h"             # Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       401:
         absolute_threshold: 100                           # Alert if the 401 response code errors in application goes beyond 100 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 20                          # Alert if the 401 response code errors in application goes beyond 20 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the  401 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the  401 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       403:
         absolute_threshold: 100                           # Alert if the 403 response code errors in application goes beyond 100 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 70                          # Alert if the 403 response code errors in application goes beyond 70 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the  403 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the  403 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       404:
         absolute_threshold: 500                           # Alert if the 404 response code errors in application goes beyond 500 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 20                          # Alert if the 404 response code errors in application goes beyond 20 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the 404 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the 404 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       5xx:
-        absolute_threshold: 40                            # Alert if the 5XX response code errors in application goes beyond 40 in a 5-minute window.
+        absolute_threshold: 0                            # Alert if the 5XX response code errors in application goes beyond 40 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 40                          # Alert if the 5XX response code errors in application goes beyond 40 percent in a given time window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the 500 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the 500 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
         severity_level: "critical"                        # Severity level of alert
@@ -107,6 +111,7 @@ alerts:
         adaptive_threshold: -1                            # Alert if the 424 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       409:
         absolute_threshold: 100                           # Alert if the 409 response code errors in application goes beyond 100 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
@@ -115,6 +120,7 @@ alerts:
         adaptive_threshold: -1                            # Alert if the 409 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
+        severity_level: "critical"                        # Severity level of alert
       201:
         absolute_threshold: -1                            # Alert if the 201 response code errors in application goes below 10 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
@@ -129,7 +135,7 @@ alerts:
         absolute_time_window: "5m"                        # Time window for bad_request_threshold ,default "5m"
         percentage_threshold: 70                          # Alert if the outbound 400 response code errors in application goes beyond 70 percent in a given time window.
         percentage_time_window: "5m"                      # Time window for bad_request_percentage_threshold ,default "5m"
-        adaptive_threshold: 15                            # Alert if the outbound 400 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the outbound 400 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Reference Time window  ,default "24h"
         adaptive_reference_time_window: "3h"             # Time window  ,default "3h"
       401:
@@ -137,7 +143,7 @@ alerts:
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 20                          # Alert if the outbound 401 response code errors in application goes beyond 20 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the outbound 401 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the outbound 401 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
       403:
@@ -145,7 +151,7 @@ alerts:
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 70                          # Alert if the outbound 403 response code errors in application goes beyond 70 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the outbound 403 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the outbound 403 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
       404:
@@ -153,15 +159,15 @@ alerts:
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 20                          # Alert if the outbound 404 response code errors in application goes beyond 20 percent in a 5-minute window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the outbound 404 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the outbound 404 response code in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
       5xx:
-        absolute_threshold: 40                            # Alert if the outbound 5XX response code errors in application goes beyond 40 in a 5-minute window.
+        absolute_threshold: 0                            # Alert if the outbound 5XX response code errors in application goes beyond 40 in a 5-minute window.
         absolute_time_window: "5m"                        # Time window  ,default "5m"
         percentage_threshold: 40                          # Alert if the outbound 5XX response code errors in application goes beyond 40 percent in a given time window.
         percentage_time_window: "5m"                      # Time window  ,default "5m"
-        adaptive_threshold: 15                            # Alert if the outbound  500 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
+        adaptive_threshold: -1                            # Alert if the outbound  500 response code count in  an application goes beyond 15 percent in a 5min window over last 24-hour window.
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Reference Time window  ,default "3h"
         severity_level: "critical"                        # Severity level of alert
@@ -174,11 +180,11 @@ alerts:
         adaptive_time_window: "5m"                        # Time window  ,default "5m"
         adaptive_reference_time_window: "3h"             # Time window  ,default "3h"
     request_count:
-      adaptive_threshold: 30                              # Alert if the number of requests in the last 5 mins is higher/lower than 30% than the average for last 24 hours.
+      adaptive_threshold: -1                              # Alert if the number of requests in the last 5 mins is higher/lower than 30% than the average for last 24 hours.
       adaptive_time_window: "5m"                          # Time window  ,default "5m"
       adaptive_reference_time_window: "3h"                # Time window  ,default "3h"
     outbound_request_count:
-      adaptive_threshold: 30                              # Alert if the number of outbound requests in the last 5 mins is higher/lower than 30% than the average for last 24 hours
+      adaptive_threshold: -1                              # Alert if the number of outbound requests in the last 5 mins is higher/lower than 30% than the average for last 24 hours
       adaptive_time_window: "5m"                          # Time window  ,default "5m"
       adaptive_reference_time_window: "3h"                # Time window  ,default "3h"
     response_time:
@@ -186,7 +192,7 @@ alerts:
       absolute_warning_time_window: "5m"                  # Time window  ,default "5m"
       absolute_critical_threshold: 0.75                   # Alert if 95 percentile application response time increases beyond 750ms over a 5-minute window
       absolute_critical_time_window: "5m"                 # Time window  ,default "5m"
-      adaptive_threshold: 15                              # Alert if 99 percentile application response time increases beyond 15 percent in a last 5-minute window over last 24-hour window
+      adaptive_threshold: -1                              # Alert if 99 percentile application response time increases beyond 15 percent in a last 5-minute window over last 24-hour window
       adaptive_percentile: 0.99                           # The configurable application response percentile
       adaptive_time_window: "5m"                          # Time window  ,default "5m"
       adaptive_reference_time_window: "3h"               # Time window total  ,default "3h"
