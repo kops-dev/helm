@@ -83,7 +83,7 @@ spec:
         {{- end}}
         # Alert if CPU utilization is beyond threshold for service in any pod
         {{- if ne .Values.alerts.standard.infra.service_cpu_utilization_threshold -1.0 }}
-        - alert: {{ snakecase .Values.name }}_service_cpu__utilization_above_{{ .Values.alerts.standard.infra.service_cpu_utilization_threshold}}
+        - alert: {{ snakecase .Values.name }}_service_cpu_utilization_above_{{ .Values.alerts.standard.infra.service_cpu_utilization_threshold}}
           annotations:
             description: "{{ .Values.name }} service cpu utilization above {{ .Values.alerts.standard.infra.service_cpu_utilization_threshold}} percentage"
           expr: ((sum(irate(container_cpu_usage_seconds_total{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"}[{{ .Values.alerts.standard.infra.service_cpu_utilization_time_window }}]))  / sum(container_spec_cpu_quota{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"} / container_spec_cpu_period{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"})  ) * 100)  > {{ .Values.alerts.standard.infra.service_cpu_utilization_threshold }} 
@@ -107,7 +107,7 @@ spec:
          {{- end }}
 
         {{- range $k, $v := .Values.alerts.standard.response_code}}
-        # Alert if the any response code errors in application reaches a threshold.
+        # Alert if any response code errors in application reaches a threshold.
         {{- if ne $v.absolute_threshold -1.0 }}
         - alert: {{ snakecase $.Values.name }}_{{ snakecase $k }}_error
           annotations:
@@ -143,7 +143,7 @@ spec:
             service: {{ $.Values.name }}
             namespace: {{ $.Release.Namespace }}
         {{- end }}
-        # Alert if the any response code count is 15% (configurable) in last 5 mins (configurable) greater than 5 min (configurable) for last 24h (configurable).
+        # Alert if any response code count is 15% (configurable) in last 5 mins (configurable) greater than 5 min (configurable) for last 24h (configurable).
         {{- if ne $v.adaptive_threshold -1.0}}
         - alert: {{ snakecase $.Values.name }}_{{snakecase $k }}_error_adaptive_alerts
           annotations:
@@ -182,7 +182,7 @@ spec:
             service: {{ $.Values.name }}
             namespace: {{ $.Release.Namespace }}
         {{- end }}
-        # Alert if the any outbound response code errors in reaches greater than percentage threshold.
+        # Alert if any outbound response code errors in reaches greater than percentage threshold.
         {{- if ne $v.percentage_threshold -1.0 }}
         - alert: {{ snakecase $.Values.name }}_{{ snakecase $k }}_outbound_error_percentage
           annotations:
