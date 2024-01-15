@@ -18,6 +18,7 @@ spec:
           annotations:
             description: "{{ .Values.name }} pods below minimum number of replicas."
           expr: sum(kube_deployment_status_replicas_available{namespace="{{ .Release.Namespace }}", deployment="{{ .Values.name }}"}) - sum(kube_horizontalpodautoscaler_spec_min_replicas{namespace="{{ .Release.Namespace }}", horizontalpodautoscaler="{{ .Values.name }}"}) < 0
+          for: 3m
           labels:
             severity: critical
             servicealert: "true"
