@@ -41,7 +41,7 @@ env:
   DB_SSL: ""
   ENABLE_SSL: ""
 
-config_map_reference: "{{tpl .Values.name . }}-config-map"
+config_map_reference: "{{tpl .Values.name . }}-infra"
 env_config_map_reference: "{{tpl .Values.name . }}"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
 
