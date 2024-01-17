@@ -69,6 +69,8 @@ spec:
             {{- end }}
             - configMapRef:
                 name: {{ tpl $.Values.config_map_reference $}}
+            - configMapRef:
+                name: {{ tpl $.Values.config_map_reference1 $}}
           env:
             {{- range $k,$v := .Values.env }}
               {{- if ne (toString $v) ""}}
