@@ -42,7 +42,7 @@ env:
   ENABLE_SSL: ""
 
 config_map_reference: "{{tpl .Values.name . }}-config-map"
-config_map_reference1: "{{tpl .Values.name . }}"
+env_config_map_reference: "{{tpl .Values.name . }}"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
 
 
