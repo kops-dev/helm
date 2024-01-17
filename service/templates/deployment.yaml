@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    configmap.reloader.stakater.com/reload: "{{ .Values.name }}-config-map, {{ .Values.name }}"
+    configmap.reloader.stakater.com/reload: "{{ .Values.name }}"
   name: {{ .Values.name }}
   labels:
     app: {{ .Values.name }}
