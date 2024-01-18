@@ -3,6 +3,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: "{{ .Values.name }}"
   name: {{ .Values.name }}
   labels:
     app: {{ .Values.name }}
@@ -69,6 +71,8 @@ spec:
             {{- end }}
             - configMapRef:
                 name: {{ tpl $.Values.config_map_reference $}}
+            - configMapRef:
+                name: {{ tpl $.Values.env_config_map_reference $}}
           env:
             {{- range $k,$v := .Values.env }}
               {{- if ne (toString $v) ""}}
