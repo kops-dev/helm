@@ -1,5 +1,6 @@
 # Name of the service
 name: hello-api
+namespace: sample
 
 # Number of replicas to run
 replicaCount: 2
@@ -41,8 +42,9 @@ env:
   DB_SSL: ""
   ENABLE_SSL: ""
 
-config_map_reference: "{{tpl .Values.name . }}-infra"
-env_config_map_reference: "{{tpl .Values.name . }}"
+namespace_configmap_reference: "{{tpl .Values.namespace . }}"
+service_configmap_reference: "{{tpl .Values.name . }}-infra"
+env_configmap_reference: "{{tpl .Values.name . }}"
 secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
 
 

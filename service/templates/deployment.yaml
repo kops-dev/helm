@@ -70,9 +70,11 @@ spec:
                 name: {{ tpl $.Values.secret_key_reference $}}
             {{- end }}
             - configMapRef:
-                name: {{ tpl $.Values.config_map_reference $}}
+                name: {{ tpl $.Values.namespace_configmap_reference $}}
             - configMapRef:
-                name: {{ tpl $.Values.env_config_map_reference $}}
+                name: {{ tpl $.Values.service_configmap_reference $}}
+            - configMapRef:
+                name: {{ tpl $.Values.env_configmap_reference $}}
           env:
             {{- range $k,$v := .Values.env }}
               {{- if ne (toString $v) ""}}
