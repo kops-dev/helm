@@ -35,6 +35,8 @@ suspend: false
 concurrencyPolicy: "Replace"
 default_severity: "critical"
 
+disableProbes: false
+
 # All environment variables can be passed as a map
 env:
   HTTP_PORT: 8000
