@@ -35,7 +35,7 @@ suspend: false
 concurrencyPolicy: "Replace"
 default_severity: "critical"
 
-disableProbes: false
+enableProbes: true
 
 # All environment variables can be passed as a map
 env:

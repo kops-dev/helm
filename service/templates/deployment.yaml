@@ -105,7 +105,7 @@ spec:
               memory: {{.Values.maxMemory| quote }}
               cpu: {{.Values.maxCPU | quote }}
 
-          {{- if not .Values.disableProbes }}
+          {{- if .Values.enableProbes }}
           readinessProbe:
             {{- if .Values.cliService }}
             exec:
