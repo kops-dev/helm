@@ -104,6 +104,8 @@ spec:
             limits:
               memory: {{.Values.maxMemory| quote }}
               cpu: {{.Values.maxCPU | quote }}
+
+          {{- if .Values.enableProbes }}
           readinessProbe:
             {{- if .Values.cliService }}
             exec:
@@ -132,5 +134,7 @@ spec:
             timeoutSeconds: {{ (.Values.livenessProbe).timeoutSeconds | default 3 }}
             periodSeconds: {{ (.Values.livenessProbe).periodSeconds | default 10 }}
             failureThreshold: {{ (.Values.livenessProbe).failureThreshold | default 3 }}
+          {{- end }}
+
 ---
   {{- end -}}
