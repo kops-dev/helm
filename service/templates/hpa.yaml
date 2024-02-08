@@ -1,10 +1,6 @@
 {{- if not .Values.schedule -}}
 ---
-{{- if (lt (float64 .Capabilities.KubeVersion.Minor) 1.23) -}}
-apiVersion: autoscaling/v2beta2
-  {{- else}}
 apiVersion: autoscaling/v2
-  {{- end}}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Values.name }}
