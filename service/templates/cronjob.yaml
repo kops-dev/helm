@@ -7,7 +7,7 @@ metadata:
     app: {{ .Values.name }}
 spec:
   schedule: {{ .Values.schedule | quote }}
-  suspend: {{ .Values.suspend | quote }}
+  suspend: {{ .Values.suspend }}
   concurrencyPolicy: {{ .Values.concurrencyPolicy }}
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 2
