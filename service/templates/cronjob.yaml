@@ -6,9 +6,9 @@ metadata:
   labels:
     app: {{ .Values.name }}
 spec:
-  schedule: {{ .Values.schedule}}
-  suspend: {{ .Values.suspend}}
-  concurrencyPolicy: {{ .Values.concurrencyPolicy}}
+  schedule: {{ .Values.schedule | quote }}
+  suspend: {{ .Values.suspend | quote }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
   failedJobsHistoryLimit: 1
   successfulJobsHistoryLimit: 2
   jobTemplate:
@@ -20,7 +20,7 @@ spec:
           labels:
             app: {{ .Values.name }}
         spec:
-          {{- if .Values.secrets }}
+          {{- if ne .Values.secret_key_reference "" }}
           serviceAccountName: secrets-account
           volumes:
             - name: app-secrets
@@ -28,7 +28,7 @@ spec:
                 driver: secrets-store.csi.k8s.io
                 readOnly: true
                 volumeAttributes:
-                  secretProviderClass: "aws-secrets-application"
+                  secretProviderClass: "{{ .Values.name }}-secrets-application"
           {{- end }}
           containers:
             - name: {{ .Values.name }}
@@ -37,19 +37,19 @@ spec:
               ports:
                 - name: metrics-port
                   containerPort: {{ .Values.metricsPort }}
+              envFrom:
+                {{- if ne .Values.secret_key_reference "" }}
+                - secretRef:
+                    name: {{ tpl $.Values.secret_key_reference $}}
+                {{- end }}
+                - configMapRef:
+                    name: {{ tpl $.Values.config_map_reference $}}
               env:
                 {{- range $k,$v := .Values.env }}
                 - name: {{ $k | quote }}
                   value: {{ $v | quote }}
                 {{- end }}
-                {{- range $k,$v := .Values.secrets }}
-                - name: {{ $k | quote }}
-                  valueFrom:
-                    secretKeyRef:
-                      name: "application-secrets"
-                      key:  {{ $v | quote }}
-              {{- end }}
-              {{- if .Values.secrets }}
+              {{- if ne .Values.secret_key_reference "" }}
               volumeMounts:
                 - name: app-secrets
                   mountPath: "/mnt/secrets-store"
