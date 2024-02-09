@@ -3,7 +3,17 @@ entries:
   service:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2024-01-30T12:42:01.960555+05:30"
+    created: "2024-02-09T16:54:08.08105+05:30"
+    description: Helm chart creates a deployment, service, hpa for a service along
+      with serviceMonitor etc
+    digest: 5be79e41146cee90d6d1343f67e82864517e5ddd368108ad7c9dc4dc2129a590
+    name: service
+    urls:
+    - service-v0.1.5.tgz
+    version: v0.1.5
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2024-02-09T16:54:08.080455+05:30"
     description: Helm chart creates a deployment, service, hpa for a service along
       with serviceMonitor etc
     digest: 7a6cc06fbf4f93a88f6c25e1da9455084faf443ae8ed11a2dbb742ac36738f7c
@@ -13,7 +23,7 @@ entries:
     version: v0.1.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2024-01-30T12:42:01.958785+05:30"
+    created: "2024-02-09T16:54:08.079694+05:30"
     description: Helm chart creates a deployment, service, hpa for a service along
       with serviceMonitor etc
     digest: e0a7b00b79a3053313872190c88b3344628af2cb5b0b7768ac33c221dd20a4f0
@@ -23,7 +33,7 @@ entries:
     version: v0.1.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2024-01-30T12:42:01.95801+05:30"
+    created: "2024-02-09T16:54:08.078968+05:30"
     description: Helm chart creates a deployment, service, hpa for a service along
       with serviceMonitor etc
     digest: e4ce440bef05542ef05baee44952c21a105c0f8fa07460d3a6b27e53c59e6a0a
@@ -33,7 +43,7 @@ entries:
     version: v0.1.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2024-01-30T12:42:01.957225+05:30"
+    created: "2024-02-09T16:54:08.078259+05:30"
     description: Helm chart creates a deployment, service, hpa for a service along
       with serviceMonitor etc
     digest: d3c9d82888d6d19bfba7485b294d0533d624126ac04c24532e5bb52526fe45b4
@@ -43,7 +53,7 @@ entries:
     version: v0.1.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2024-01-30T12:42:01.95649+05:30"
+    created: "2024-02-09T16:54:08.077524+05:30"
     description: Helm chart creates a deployment, service, hpa for a service along
       with serviceMonitor etc
     digest: fa549a59218a213e6e888b77406d126dbba7fca0e468f649198e89137e239ef3
@@ -51,4 +61,14 @@ entries:
     urls:
     - service-v0.1.0.tgz
     version: v0.1.0
-generated: "2024-01-30T12:42:01.954774+05:30"
+  - apiVersion: v1
+    appVersion: v-.1.6
+    created: "2024-02-09T16:54:08.081659+05:30"
+    description: Helm chart creates a deployment, service, hpa for a service along
+      with serviceMonitor etc
+    digest: 27600655f4ccb729b334a2f460e1bbe40b6935e5770eedd426aa5fc1f29bc730
+    name: service
+    urls:
+    - service-v0.1.6.tgz
+    version: 0.0.1
+generated: "2024-02-09T16:54:08.074172+05:30"
