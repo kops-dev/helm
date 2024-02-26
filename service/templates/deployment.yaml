@@ -22,7 +22,16 @@ spec:
       - name: gcr-json-key
       {{- if ne .Values.secret_key_reference "" }}
       serviceAccountName: secrets-account
+      {{- end }}
       volumes:
+      {{- if .Values.volumeMounts }}
+      {{- range $k,$v := .Values.volumeMounts.configmaps }}
+        - name: {{ $v.name }}
+          configMap:
+            name: {{ $v.name }}
+      {{- end }}
+      {{- end }}
+      {{- if ne .Values.secret_key_reference "" }}
         - name: app-secrets
           csi:
             driver: secrets-store.csi.k8s.io
@@ -86,9 +95,18 @@ spec:
             - name: DB_KEY_FILE
               value: /etc/ssl/private.pem
               {{- end }}
-          {{- if ne .Values.secret_key_reference "" }}
           # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
+          {{- if .Values.volumeMounts }}
+          {{- range $k,$v := .Values.volumeMounts.configmaps }}
+            - name: {{ $v.name }}
+              mountPath: {{ $v.mountPath }}
+            {{- if ne $v.subPath "" }}
+              subPath: {{ $v.subPath }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if ne .Values.secret_key_reference "" }}
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
