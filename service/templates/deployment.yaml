@@ -18,8 +18,6 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
-      imagePullSecrets:
-      - name: gcr-json-key
       {{- if ne .Values.secret_key_reference "" }}
       serviceAccountName: secrets-account
       {{- end }}
@@ -38,7 +36,7 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: "{{ .Values.name }}-secrets-application"
-      {{- if eq .Values.env.ENABLE_SSL "true" }}
+      {{- if eq .Values.env.DB_ENABLE_SSL "true" }}
         - name: ssl-secrets
           secret:
             secretName: ssl-certs
@@ -74,14 +72,14 @@ spec:
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
           envFrom:
-            {{- if ne .Values.secret_key_reference "" }}
-            - secretRef:
-                name: {{ tpl $.Values.secret_key_reference $}}
+            {{- range $i, $name := .Values.envFrom.configmaps }}
+            - configMapRef:
+                name: {{ $name }}
             {{- end }}
-            - configMapRef:
-                name: {{ tpl $.Values.config_map_reference $}}
-            - configMapRef:
-                name: {{ tpl $.Values.env_config_map_reference $}}
+            {{- range $i, $name := .Values.envFrom.secrets }}
+            - secretRef:
+                name: {{ $name }}
+                {{- end }}
           env:
             {{- range $k,$v := .Values.env }}
               {{- if ne (toString $v) ""}}
@@ -89,12 +87,6 @@ spec:
               value: {{ $v | quote }}
               {{- end }}
             {{- end }}
-              {{- if eq .Values.env.ENABLE_SSL "true" }}
-            - name: DB_CERTIFICATE_FILE
-              value: /etc/ssl/client.pem
-            - name: DB_KEY_FILE
-              value: /etc/ssl/private.pem
-              {{- end }}
           # Volume mount is required for the secret to sync with kubernetes secret
           volumeMounts:
           {{- if .Values.volumeMounts }}
@@ -110,7 +102,7 @@ spec:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
-          {{- if eq .Values.env.ENABLE_SSL "true" }}
+          {{- if eq .Values.env.DB_ENABLE_SSL "true" }}
             - name: ssl-secrets
               mountPath: /etc/ssl
           {{- end }}
@@ -120,38 +112,43 @@ spec:
               memory: {{.Values.minMemory | quote }}
               cpu: {{.Values.minCPU | quote }}
             limits:
+            {{ if ne .Values.maxMemory "" }}
               memory: {{.Values.maxMemory| quote }}
+            {{ end }}
+            {{ if ne .Values.maxCPU "" }}
               cpu: {{.Values.maxCPU | quote }}
-
-          {{- if .Values.enableProbes }}
+            {{ end }}
+          {{- if .Values.readinessProbe.enable }}
           readinessProbe:
             {{- if .Values.cliService }}
             exec:
               command:
                 - ls
-            {{ else }}
+            {{- else if ne .Values.heartbeatURL "" }}
             httpGet:
               path: {{ .Values.heartbeatURL | quote}}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: {{ (.Values.readinessProbe).initialDelaySeconds | default 3 }}
-            timeoutSeconds: {{ (.Values.readinessProbe).timeoutSeconds | default 3 }}
-            periodSeconds: {{ (.Values.readinessProbe).periodSeconds |default 10 }}
-            failureThreshold: {{ (.Values.readinessProbe).failureThreshold | default 3 }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds | default 3 }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds |default 10 }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold | default 3 }}
+          {{- end }}
+          {{- if .Values.livenessProbe.enable }}
           livenessProbe:
             {{- if .Values.cliService }}
             exec:
               command:
                 - ls
-            {{ else }}
+            {{ else if ne .Values.heartbeatURL ""}}
             httpGet:
               path: {{ .Values.heartbeatURL | quote }}
               port: {{ .Values.httpPort }}
             {{- end }}
-            initialDelaySeconds: {{ (.Values.livenessProbe).initialDelaySeconds | default 3 }}
-            timeoutSeconds: {{ (.Values.livenessProbe).timeoutSeconds | default 3 }}
-            periodSeconds: {{ (.Values.livenessProbe).periodSeconds | default 10 }}
-            failureThreshold: {{ (.Values.livenessProbe).failureThreshold | default 3 }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds | default 3 }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds | default 3 }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds | default 10 }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold | default 3 }}
           {{- end }}
 
 ---

@@ -13,6 +13,10 @@ metricsPort: 2121
 
 metricsScrapeInterval: 30s
 
+envFrom:
+  secrets: [] #List of secrets
+  configmaps: [] #List of Configmaps
+
 # Resource allocations
 minCPU: "100m"
 minMemory: "128Mi"
@@ -21,8 +25,6 @@ maxMemory: "512Mi"
 minReplicas: 2
 maxReplicas: 4
 minAvailable: 1
-hpa_cpu_limit: 250
-hpa_memory_limit: 80
 
 # Whether application is a CLI service
 cliService: false
@@ -34,20 +36,20 @@ heartbeatURL: "/.well-known/heartbeat"
 schedule: ""
 suspend: false
 concurrencyPolicy: "Replace"
+
 default_severity: "critical"
 
-enableProbes: true
+readinessProbe:
+  enable: true
+
+livenessProbe:
+  enable: true
 
 # All environment variables can be passed as a map
 env:
-  HTTP_PORT: 8000
-  DB_SSL: ""
-  ENABLE_SSL: ""
+  DB_ENABLE_SSL: "false"
 
-config_map_reference: "{{tpl .Values.name . }}-infra"
-env_config_map_reference: "{{tpl .Values.name . }}"
-secret_key_reference: "{{tpl .Values.name . }}-application-secrets"
-
+secret_key_reference: ""
 
 alerts:
   standard:
