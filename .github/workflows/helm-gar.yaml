@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - '*'
-    branches:
-      - main
 
 jobs:
   push_to_gar:
@@ -18,7 +16,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: 'v3.5.0' # You can specify the version you want to use
+          version: 'v3.13.0' # You can specify the version you want to use
 
       - name: Package Helm Chart
         run: |
