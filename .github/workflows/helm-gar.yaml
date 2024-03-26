@@ -29,7 +29,7 @@ jobs:
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.DEPLOYMENT_KEY }}
+          credentials_json: ${{ secrets.ZS_HELM_SERVICE }}
 
       - name: Authenticate with Docker configuration using access token
         run: |
