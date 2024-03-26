@@ -22,7 +22,7 @@ jobs:
 
       - name: Package Helm Chart
         run: |
-          mkdir charts
+          mkdir charts1
           helm package service --version ${GITHUB_REF#refs/*/} -d ./charts1   
           helm repo index ./charts1
 
