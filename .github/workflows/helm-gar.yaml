@@ -2,6 +2,8 @@ name: Push Helm Repo to GAR
 
 on:
   push:
+    tags:
+      - '*'
     branches:
       - main
 
