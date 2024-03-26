@@ -33,6 +33,7 @@ jobs:
 
       - name: Authenticate with Docker configuration using access token
         run: |
+          export HELM_EXPERIMENTAL_OCI=1
           gcloud auth print-access-token | helm registry login -u oauth2accesstoken \
           --password-stdin https://us-central1-docker.pkg.dev
 
