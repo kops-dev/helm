@@ -1,4 +1,4 @@
-{{- if not .Values.schedule -}}
+{{- if and (not .Values.schedule) (.Values.hpa_enable)   -}}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -17,12 +17,28 @@ spec:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ .Values.hpa_cpu_limit  }}
+        {{ if ne .Values.hpaCPU "" }}
+        {{ if ne .Values.hpaCPU nil }}
+        averageUtilization: {{ .Values.hpaCPU }}
+        {{ else if ne .Values.maxCPU "" }}
+        averageUtilization: {{ div (mul (int (trimSuffix "m" .Values.maxCPU)) 80) (int (trimSuffix "m" .Values.minCPU)) }}
+        {{ else }}
+        averageUtilization: 80
+        {{ end }}
+        {{ end }}
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: {{ .Values.hpa_memory_limit  }}
+        {{if ne .Values.hpaMemory ""}}
+        {{ if ne .Values.hpaMemory nil }}
+        averageUtilization: {{ .Values.hpaMemory }}
+        {{ else if ne .Values.maxMemory "" }}
+        averageUtilization: {{ div (mul (int (trimSuffix "Mi" .Values.maxMemory)) 80) (int (trimSuffix "Mi" .Values.minMemory)) }}
+        {{ else }}
+        averageUtilization: 80
+        {{ end }}
+        {{ end }}
 ---
   {{- end -}}
