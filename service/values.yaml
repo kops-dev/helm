@@ -47,9 +47,9 @@ livenessProbe:
 
 # All environment variables can be passed as a map
 env:
-  DB_ENABLE_SSL: false
+  DB_ENABLE_SSL: true
 
-secret_key_reference: ""
+secret_key_reference: "abc"
 
 alerts:
   standard:
