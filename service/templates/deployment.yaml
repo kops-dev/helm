@@ -102,7 +102,7 @@ spec:
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true
-          {{- if eq .Values.env.DB_ENABLE_SSL "true" }}
+          {{- if eq .Values.env.DB_ENABLE_SSL true }}
             - name: ssl-secrets
               mountPath: /etc/ssl
           {{- end }}
