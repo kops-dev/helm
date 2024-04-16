@@ -40,32 +40,52 @@ spec:
                 - name: metrics-port
                   containerPort: {{ .Values.metricsPort }}
               envFrom:
-                {{- if ne .Values.secret_key_reference "" }}
-                - secretRef:
-                    name: {{ tpl $.Values.secret_key_reference $}}
+                {{- range $i, $name := .Values.envFrom.configmaps }}
+                - configMapRef:
+                    name: {{ $name }}
                 {{- end }}
-                - configMapRef:
-                    name: {{ tpl $.Values.config_map_reference $}}
-                - configMapRef:
-                    name: {{ tpl $.Values.env_config_map_reference $}}
+                {{- range $i, $name := .Values.envFrom.secrets }}
+                - secretRef:
+                    name: {{ $name }}
+                 {{- end }}
               env:
                 {{- range $k,$v := .Values.env }}
+                  {{- if ne (toString $v) ""}}
                 - name: {{ $k | quote }}
                   value: {{ $v | quote }}
+                  {{- end }}
                 {{- end }}
-              {{- if ne .Values.secret_key_reference "" }}
+                  # Volume mount is required for the secret to sync with kubernetes secret
               volumeMounts:
+              {{- if .Values.volumeMounts }}
+              {{- range $k,$v := .Values.volumeMounts.configmaps }}
+                - name: {{ $v.name }}
+                  mountPath: {{ $v.mountPath }}
+                {{- if ne $v.subPath "" }}
+                  subPath: {{ $v.subPath }}
+                {{- end }}
+              {{- end }}
+              {{- end }}
+              {{- if ne .Values.secret_key_reference "" }}
                 - name: app-secrets
                   mountPath: "/mnt/secrets-store"
                   readOnly: true
+              {{- if .Values.env.DB_ENABLE_SSL }}
+                - name: ssl-secrets
+                  mountPath: /etc/ssl
+              {{- end }}
               {{- end }}
               resources:
                 requests:
                   memory: {{.Values.minMemory | quote }}
                   cpu: {{.Values.minCPU | quote }}
                 limits:
+                {{ if ne .Values.maxMemory "" }}
                   memory: {{.Values.maxMemory| quote }}
+                {{ end }}
+                {{ if ne .Values.maxCPU "" }}
                   cpu: {{.Values.maxCPU | quote }}
+                {{ end }}
           restartPolicy: Never
 
   {{- end -}}
