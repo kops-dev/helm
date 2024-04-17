@@ -97,6 +97,13 @@ spec:
               subPath: {{ $v.subPath }}
             {{- end }}
           {{- end }}
+          {{- range $k,$v := .Values.volumeMounts.secrets }}
+            - name: {{ $v.name }}
+              mountPath: {{ $v.mountPath }}
+            {{- if ne $v.subPath "" }}
+              subPath: {{ $v.subPath }}
+            {{- end }}
+          {{- end }}
           {{- end }}
           {{- if ne .Values.secret_key_reference "" }}
             - name: app-secrets
