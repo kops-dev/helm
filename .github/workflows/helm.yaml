@@ -20,9 +20,9 @@ jobs:
 
       - name: Package Helm Chart
         run: |
-          mkdir charts1
-          helm package service --version ${GITHUB_REF#refs/*/} -d ./charts1   
-          helm repo index ./charts1
+          mkdir charts
+          helm package service --version ${GITHUB_REF#refs/*/} -d ./charts   
+          helm repo index ./charts
 
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
@@ -37,4 +37,4 @@ jobs:
 
       - name: Push Helm Chart to GAR
         run: |
-          helm push ./charts1/service-${GITHUB_REF#refs/*/}.tgz oci://us-central1-docker.pkg.dev/zs-devops/zs-helm
+          helm push ./charts/service-${GITHUB_REF#refs/*/}.tgz oci://us-central1-docker.pkg.dev/zs-devops/zs-helm
