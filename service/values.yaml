@@ -19,9 +19,9 @@ envFrom:
 
 # Resource allocations
 minCPU: "100m"
-minMemory: "128Mi"
+minMemory: "128M"
 maxCPU: "500m"
-maxMemory: "512Mi"
+maxMemory: "512M"
 minReplicas: 2
 maxReplicas: 4
 minAvailable: 1

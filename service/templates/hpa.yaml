@@ -35,7 +35,7 @@ spec:
         {{ if ne .Values.hpaMemory nil }}
         averageUtilization: {{ .Values.hpaMemory }}
         {{ else if ne .Values.maxMemory "" }}
-        averageUtilization: {{ div (mul (int (trimSuffix "Mi" .Values.maxMemory)) 80) (int (trimSuffix "Mi" .Values.minMemory)) }}
+        averageUtilization: {{ div (mul (int (trimSuffix "M" .Values.maxMemory)) 80) (int (trimSuffix "M" .Values.minMemory)) }}
         {{ else }}
         averageUtilization: 80
         {{ end }}
