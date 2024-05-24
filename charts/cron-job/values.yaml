@@ -5,7 +5,7 @@ name: hello-api
 image: "ghcr.io/kops-dev/sample-api:latest"
 
 #cron JOB
-schedule: ""
+schedule: "0 */1 * * *"
 suspend: false
 concurrencyPolicy: "Replace"
 command: ""
@@ -31,3 +31,8 @@ env:
   APP_NAME: hello-api
 
 app_secrets: false
+
+alerts:
+  standard:
+    infra:
+      cronjob_failed_threshold: 0

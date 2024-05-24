@@ -1,12 +1,42 @@
-# Service Module
-- The `Service` module helps you to create Deployment, Services, HPA, ServiceMonitor, Alerts, etc.
+# Service 
 
-##### Install/ Upgrade using the below command
-```
-helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
+Install service, a collection of kubernetes manifest for Deployment, Services, HPA, PDB, ServiceMonitor, Alerts, etc.
+
+## Prerequisites
+
+- Kubernetes 1.19+
+- Helm 3+
+
+## Get Helm Repository Info
+
+```console
+helm repo add kops-dev https://kops-dev.github.io/helm
+helm repo update
 ```
 
-####  `Values`
+_See [`helm repo`](https://helm.sh/docs/helm/helm_repo/) for command documentation._
+
+## Install Helm Chart
+
+```console
+helm install [RELEASE_NAME] kops-dev/service
+```
+
+_See [configuration](#configuration) below._
+
+_See [helm install](https://helm.sh/docs/helm/helm_install/) for command documentation._
+
+## Uninstall Helm Chart
+
+```console
+helm uninstall [RELEASE_NAME]
+```
+
+This removes all the Kubernetes components associated with the chart and deletes the release.
+
+_See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command documentation._
+
+# Configuration
 
 | Inputs                             | Type    | Description                                                                                                         | Default                              |
 |------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -16,8 +46,6 @@ helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
 | envFrom.configmaps                 | list    | List of Configmaps from which env should be mounted on to containers                                                | `[]`                                 |
 | envFrom.secrets                    | list    | List of secrets from which env should be mounted on to containers                                                   | `[]`                                 |
 | heartbeatURL                       | string  | Heartbeat URL of the service                                                                                        | `"/"`                                |
-| hpa_cpu_limit                      | number  | HPA CPU limit                                                                                                       | `80`                                 |
-| hpa_memory_limit                   | number  | HPA Memory limit                                                                                                    | `80`                                 |
 | httpPort                           | number  | Port on which container runs its services                                                                           | `8000`                               |
 | image                              | string  | Docker container image with tag                                                                                     | `ghcr.io/kops-dev/sample-api:latest` |
 | livenessProbe.enable               | boolean | Whether liveness Probe should be configured on the container or not                                                 | `true`                               |
