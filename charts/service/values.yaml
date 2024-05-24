@@ -30,17 +30,17 @@ minAvailable: 1
 cliService: false
 
 # Heartbeat URL
-heartbeatURL: "/"
+heartbeatURL: ""
 
 readinessProbe:
-  enable: true
+  enable: false
 #  initialDelaySeconds: 3
 #  timeoutSeconds: 3
 #  periodSeconds: 10
 #  failureThreshold: 3
 
 livenessProbe:
-  enable: true
+  enable: false
 #  initialDelaySeconds: 3
 #  timeoutSeconds: 3
 #  periodSeconds: 10
