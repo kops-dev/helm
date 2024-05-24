@@ -1,44 +1,14 @@
-# Helm Module
-- Helm helps you manage Kubernetes applications. `Helm Charts` help you define, install, and upgrade even the most complex Kubernetes application. Charts are easy to create, version, share, and publish.
-- The `helm` module helps you to create Deployment, Services, HPA, ServiceMonitor, Alerts, etc. 
+# Kops.dev Kubernetes Helm Charts
 
-This helm chart can be used by kubectl command to manually deploy an application to a cluster. Continuous deployment systems 
-like harness can use this helm chart to deploy any service to EKS/AKS/GKE cluster.
+## Usage
 
+[Helm](https://helm.sh) must be installed to use the charts.
+Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
-##### Install/ Upgrade using the below command
+Once Helm is set up properly, add the repository as follows:
+
+```console
+helm repo add kops-dev https://kops-dev.github.io/helm-charts
 ```
-helm upgrade --install {service-name} ./service/ -f values.yaml -n {namespace}
-```
 
-####  `Values`
-
-| Inputs                | Type             | Description                                                                                                                                                                        | Default                                                                                              |
-|-----------------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| cliService            | optional(bool)   | Whether application is a CLI service                                                                                                                                               | `false`                                                                                              |
-| cluster_name          | string           | Name of the Kubernetes cluster                                                                                                                                                     | nil                                                                                                  |
-| concurrencyPolicy     | optional(string) | Concurrency policy                                                                                                                                                                 | `"Replace"`                                                                                          |
-| env.HTTP_PORT         | optional(number) | HTTP port                                                                                                                                                                          | `8000`                                                                                               |
-| default_severity      | string           | Default severity level that alerts will be tagged to                                                                                                                               | `critical`                                                                                           |
-| heartbeatURL          | optional(string) | Heartbeat URL                                                                                                                                                                      | `"/.well-known/heartbeat"`                                                                           |
-| hpa_cpu_limit         | optional(number) | HPA CPU limit                                                                                                                                                                      | `80`                                                                                                 |
-| hpa_memory_limit      | optional(number) | HPA Memory limit                                                                                                                                                                   | `80`                                                                                                 |
-| httpPort              | optional(number) | Port on which container runs its services                                                                                                                                          | `8000`                                                                                               |
-| image                 | string           | Docker container image with tag                                                                                                                                                    | nil                                                                                                  |
-| maxCPU                | optional(string) | Maximum CPU resources                                                                                                                                                              | `"500m"`                                                                                             |
-| maxMemory             | optional(string) | Maximum Memory resources                                                                                                                                                           | `"512Mi"`                                                                                            |
-| maxReplicas           | optional(number) | Maximum replicas                                                                                                                                                                   | `4`                                                                                                  |
-| metricsPort           | optional(number) | Metrics port on which container runs its services                                                                                                                                  | `2121`                                                                                               |
-| metricsScrapeInterval | optional(string) | Time interval that metrics will be scraped                                                                                                                                         | `"30s"`                                                                                              |
-| minCPU                | optional(string) | Minimum CPU resources                                                                                                                                                              | `"250m"`                                                                                             |
-| minMemory             | optional(string) | Minimum Memory resources                                                                                                                                                           | `"128Mi"`                                                                                            |
-| minReplicas           | optional(number) | Minimum replicas                                                                                                                                                                   | `2`                                                                                                  |
-| name                  | optional(string) | Name of the service                                                                                                                                                                | `"hello-api"`                                                                                        |
-| replicaCount          | optional(number) | Number of replicas to run                                                                                                                                                          | `2`                                                                                                  |
-| schedule              | optional(string) | Cron job schedule                                                                                                                                                                  | `""`                                                                                                 |
-| secret_key_reference  | optional(string) | Secret key reference from where the secrets to be fetched                                                                                                                          | `application-secrets`                                                                                |
-| suspend               | optional(bool)   | Cron job suspend                                                                                                                                                                   | `false`                                                                                              |
-
-
-### Note: 
-  To refer readme related to Alerts in Helm template, [click here](ALERTS.md)
+You can then run `helm search repo kops-dev` to see the charts.

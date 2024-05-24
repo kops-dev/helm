@@ -1,0 +1,33 @@
+# Name of the cron
+name: hello-api
+
+# Docker container image with tag
+image: "ghcr.io/kops-dev/sample-api:latest"
+
+#cron JOB
+schedule: ""
+suspend: false
+concurrencyPolicy: "Replace"
+command: ""
+
+# Port on which container runs its service
+httpPort: 8000
+metricsPort: 2121
+
+# Resource allocations
+minCPU: "100m"
+minMemory: "128M"
+maxCPU: "500m"
+maxMemory: "512M"
+
+metricsScrapeInterval: 30s
+
+envFrom:
+  secrets: [] #List of secrets
+  configmaps: [] #List of Configmaps
+
+# All environment variables can be passed as a map
+env:
+  APP_NAME: hello-api
+
+app_secrets: false

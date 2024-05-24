@@ -5,7 +5,7 @@ name: hello-api
 replicaCount: 2
 
 # Docker container image with tag
-image: "manasa2210/sample-app:v0.0.2"
+image: "ghcr.io/kops-dev/sample-api:latest"
 
 # Port on which container runs its services
 httpPort: 8000
@@ -30,26 +30,35 @@ minAvailable: 1
 cliService: false
 
 # Heartbeat URL
-heartbeatURL: "/.well-known/heartbeat"
-
-#cron JOB
-schedule: ""
-suspend: false
-concurrencyPolicy: "Replace"
-
-default_severity: "critical"
+heartbeatURL: "/"
 
 readinessProbe:
   enable: true
+#  initialDelaySeconds: 3
+#  timeoutSeconds: 3
+#  periodSeconds: 10
+#  failureThreshold: 3
 
 livenessProbe:
   enable: true
+#  initialDelaySeconds: 3
+#  timeoutSeconds: 3
+#  periodSeconds: 10
+#  failureThreshold: 3
 
 # All environment variables can be passed as a map
 env:
-  DB_ENABLE_SSL: false
+  APP_NAME: hello-api
 
-secret_key_reference: ""
+app_secrets: false
+
+volumeMounts:
+  configmaps:
+#    - name: kops-configmap
+#      mountPath: /etc/env
+  secrets:
+#    - name: kops-secret
+#      mountPath: /etc/secret
 
 alerts:
   standard:
