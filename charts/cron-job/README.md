@@ -1,6 +1,6 @@
 # CronJob
 
-Install cron-job, a collection of kubernetes manifest for CronJob, Services, ServiceMonitor, Alerts, etc.
+Installs the cron-job, a collection of kubernetes manifest for CronJob, Services, ServiceMonitor, Alerts, etc.
 
 ## Prerequisites
 

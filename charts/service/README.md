@@ -1,6 +1,6 @@
 # Service 
 
-Install service, a collection of kubernetes manifest for Deployment, Services, HPA, PDB, ServiceMonitor, Alerts, etc.
+Installs the service, a collection of kubernetes manifest for Deployment, Services, HPA, PDB, ServiceMonitor, Alerts, etc.
 
 ## Prerequisites
 
