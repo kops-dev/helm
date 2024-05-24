@@ -1,4 +1,3 @@
-{{- if  .Values.schedule -}}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -22,9 +21,23 @@ spec:
           labels:
             app: {{ .Values.name }}
         spec:
-          {{- if ne .Values.secret_key_reference "" }}
+          {{- if .Values.app_secrets }}
           serviceAccountName: secrets-account
+          {{- end }}
           volumes:
+          {{- if .Values.volumeMounts }}
+            {{- range $k,$v := .Values.volumeMounts.configmaps }}
+            - name: {{ $v.name }}
+              configMap:
+                name: {{ $v.name }}
+            {{- end }}
+            {{- range $k,$v := .Values.volumeMounts.secrets }}
+            - name: {{ $v.name }}
+              secret:
+                secretName: {{ $v.name }}
+           {{- end }}
+          {{- end }}
+          {{- if .Values.app_secrets }}
             - name: app-secrets
               csi:
                 driver: secrets-store.csi.k8s.io
@@ -35,6 +48,9 @@ spec:
           containers:
             - name: {{ .Values.name }}
               image: {{ .Values.image }}
+              {{- if ne .Values.command ""}}
+              command: {{ .Values.command | toYaml | nindent 14 }}
+              {{- end }}
               imagePullPolicy: IfNotPresent
               ports:
                 - name: metrics-port
@@ -55,17 +71,16 @@ spec:
                   value: {{ $v | quote }}
                   {{- end }}
                 {{- end }}
-                  # Volume mount is required for the secret to sync with kubernetes secret
               volumeMounts:
               {{- if .Values.volumeMounts }}
               {{- range $k,$v := .Values.volumeMounts.configmaps }}
                 - name: {{ $v.name }}
                   mountPath: {{ $v.mountPath }}
-                {{- if ne $v.subPath "" }}
+              {{- if ne $v.subPath "" }}
                   subPath: {{ $v.subPath }}
-                {{- end }}
               {{- end }}
-              {{- range $k,$v := .Values.volumeMounts.configmaps }}
+              {{- end }}
+              {{- range $k,$v := .Values.volumeMounts.secrets }}
                 - name: {{ $v.name }}
                   mountPath: {{ $v.mountPath }}
                 {{- if ne $v.subPath "" }}
@@ -73,14 +88,11 @@ spec:
                 {{- end }}
               {{- end }}
               {{- end }}
-              {{- if ne .Values.secret_key_reference "" }}
+              # Volume mount is required for the secret to sync with kubernetes secret
+              {{- if .Values.app_secrets }}
                 - name: app-secrets
                   mountPath: "/mnt/secrets-store"
                   readOnly: true
-              {{- if .Values.env.DB_ENABLE_SSL }}
-                - name: ssl-secrets
-                  mountPath: /etc/ssl
-              {{- end }}
               {{- end }}
               resources:
                 requests:
@@ -94,5 +106,4 @@ spec:
                   cpu: {{.Values.maxCPU | quote }}
                 {{ end }}
           restartPolicy: Never
-
-  {{- end -}}
+---

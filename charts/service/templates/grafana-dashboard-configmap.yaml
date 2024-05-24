@@ -1,4 +1,3 @@
-{{- if not .Values.schedule -}}
 {{- if .Values.grafana_dashboard }}
 apiVersion: v1
 kind: ConfigMap
@@ -12,5 +11,4 @@ data:
    {{ $k }}: {{  $v |  toJson | quote }}
    {{- end }}
 
-{{- end }}
 {{- end }}

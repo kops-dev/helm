@@ -1,4 +1,4 @@
-{{- if and (not .Values.schedule) (.Values.hpa_enable)   -}}
+{{- if (.Values.hpa_enable)   -}}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
