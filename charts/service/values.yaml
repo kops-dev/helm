@@ -7,6 +7,11 @@ replicaCount: 2
 # Docker container image with tag
 image: "ghcr.io/kops-dev/sample-api:latest"
 
+imagePullSecrets:
+  # - gcr-secrets
+  # - acr-secrets
+  # - ecr-secrets
+
 # Port on which container runs its services
 httpPort: 8000
 metricsPort: 2121

@@ -16,6 +16,12 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
+      {{- if .Values.imagePullSecrets}}
+      imagePullSecrets:
+        {{- range $v := .Values.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
       {{- if .Values.app_secrets }}
       serviceAccountName: secrets-account
       {{- end }}
@@ -112,12 +118,12 @@ spec:
               memory: {{.Values.minMemory | quote }}
               cpu: {{.Values.minCPU | quote }}
             limits:
-            {{ if ne .Values.maxMemory "" }}
+            {{- if ne .Values.maxMemory "" }}
               memory: {{.Values.maxMemory| quote }}
-            {{ end }}
-            {{ if ne .Values.maxCPU "" }}
+            {{- end }}
+            {{- if ne .Values.maxCPU "" }}
               cpu: {{.Values.maxCPU | quote }}
-            {{ end }}
+            {{- end }}
           {{- if .Values.readinessProbe.enable }}
           readinessProbe:
             {{- if .Values.cliService }}

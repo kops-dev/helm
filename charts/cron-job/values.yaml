@@ -4,6 +4,11 @@ name: hello-api
 # Docker container image with tag
 image: "ghcr.io/kops-dev/sample-api:latest"
 
+imagePullSecrets:
+# - gcr-secrets
+# - acr-secrets
+# - ecr-secrets
+
 #cron JOB
 schedule: "0 */1 * * *"
 suspend: false
