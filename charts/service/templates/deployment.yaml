@@ -74,6 +74,10 @@ spec:
               containerPort: {{ .Values.httpPort }}
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
+            {{- range $k, $v := .Values.ports}}
+            - name: {{ $k }}
+              containerPort: {{ $v }}
+              {{- end }}
           envFrom:
             {{- range $i, $name := .Values.envFrom.configmaps }}
             - configMapRef:

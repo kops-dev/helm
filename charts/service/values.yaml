@@ -16,6 +16,9 @@ imagePullSecrets:
 httpPort: 8000
 metricsPort: 2121
 
+ports: # Provide the ports on which container runs its services
+# grpc: 9100
+
 metricsScrapeInterval: 30s
 
 envFrom:
@@ -53,7 +56,7 @@ livenessProbe:
 
 # All environment variables can be passed as a map
 env:
-  APP_NAME: hello-api
+  # APP_NAME: hello-api
 
 app_secrets: false
 

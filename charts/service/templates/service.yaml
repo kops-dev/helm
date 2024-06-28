@@ -12,6 +12,11 @@ spec:
     - name: metrics-port
       port: 2121
       targetPort: {{ .Values.metricsPort}}
+    {{- range $k, $v := .Values.ports}}
+    - name: {{ $k}}
+      port: {{ $v }}
+      targetPort: {{ $v }}
+      {{- end }}
   selector:
     app: {{ .Values.name }}
   type: NodePort
