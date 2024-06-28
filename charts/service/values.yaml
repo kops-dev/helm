@@ -16,6 +16,9 @@ imagePullSecrets:
 httpPort: 8000
 metricsPort: 2121
 
+ports:
+  
+
 metricsScrapeInterval: 30s
 
 envFrom:
