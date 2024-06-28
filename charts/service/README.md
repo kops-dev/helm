@@ -46,7 +46,7 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 | envFrom.configmaps                 | list    | List of Configmaps from which env should be mounted on to containers                                                | `[]`                                 |
 | envFrom.secrets                    | list    | List of secrets from which env should be mounted on to containers                                                   | `[]`                                 |
 | heartbeatURL                       | string  | Heartbeat URL of the service                                                                                        | `""`                                 |
-| httpPort                           | number  | Port on which container runs its services                                                                           | `8000`                               |
+| httpPort                           | number  | HTTP Port on which container runs its services                                                                      | `8000`                               |
 | image                              | string  | Docker container image with tag                                                                                     | `ghcr.io/kops-dev/sample-api:latest` |
 | imagePullSecrets                   | list    | configuration to specify secrets that contain credentials for pulling container images from private registries      | `[]`                                 |
 | livenessProbe.enable               | boolean | Whether liveness Probe should be configured on the container or not                                                 | `false`                              |
@@ -64,6 +64,7 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 | minMemory                          | string  | Specify the minimum amount of Memory that the container requires                                                    | `"128Mi"`                            |
 | minReplicas                        | number  | Specify the baseline number of identical pods allowed to be running                                                 | `2`                                  |
 | name                               | string  | Name of the service                                                                                                 | `"hello-api"`                        |
+| ports                              | map     | Provide the ports on which container runs its services                                                              | `null`                               |
 | readinessProbe.enable              | boolean | Whether Readiness Probe should be configured on the container or not                                                | `false`                              |
 | readinessProbe.initialDelaySeconds | number  | Specifies how long Kubernetes should wait after the container starts before it begins readiness probes (in seconds) | `3`                                  |
 | readinessProbe.timeoutSeconds      | number  | Specifies the number of seconds after which the probe times out                                                     | `3`                                  |

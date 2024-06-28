@@ -13,9 +13,9 @@ spec:
       port: 2121
       targetPort: {{ .Values.metricsPort}}
     {{- range $k, $v := .Values.ports}}
-    - name: {{ $k | quote }}
-      port: {{ $v | quote }}
-      targetPort: {{ $v | quote }}
+    - name: {{ $k}}
+      port: {{ $v }}
+      targetPort: {{ $v }}
       {{- end }}
   selector:
     app: {{ .Values.name }}

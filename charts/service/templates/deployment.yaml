@@ -75,8 +75,8 @@ spec:
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
             {{- range $k, $v := .Values.ports}}
-            - name: {{ $k | quote }}
-              containerPort: {{ $v | quote }}
+            - name: {{ $k }}
+              containerPort: {{ $v }}
               {{- end }}
           envFrom:
             {{- range $i, $name := .Values.envFrom.configmaps }}
