@@ -37,6 +37,17 @@ env:
 
 app_secrets: false
 
+volumeMounts:
+  configmaps:
+  #    - name: kops-configmap
+  #      mountPath: /etc/env
+  secrets:
+  #    - name: kops-secret
+  #      mountPath: /etc/secret
+  pvc:
+#    - name: kops-volume
+#      mountPath: /etc/data
+
 alerts:
   standard:
     infra:

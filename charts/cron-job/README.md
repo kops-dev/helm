@@ -57,7 +57,10 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 | volumeMounts.configmaps | list    | List of Configmaps with name and mount-path to be mounted into the container to inject configuration data                                                     | `[]`                                 |
 | volumeMounts.secrets    | list    | List of Secrets with name and mount-path to be mounted into the container to inject sensitive information                                                     | `[]`                                 |
 | schedule                | string  | Schedule for executing a job repeatedly at specified intervals. Default schedule executes job `At minute 0 past every hour.`                                  | `0 */1 * * *`                        |
-| suspend                 | boolean | Boolean whether to temporarily suspend the execution of scheduled jobs. This is useful when you need to pause the execution of a CronJob without deleting it. | `false`                              |                                      
+| suspend                 | boolean | Boolean whether to temporarily suspend the execution of scheduled jobs. This is useful when you need to pause the execution of a CronJob without deleting it. | `false`                              |
+| volumeMounts.configmaps | list    | List of Configmaps with name and mount-path to be mounted into the container to inject configuration data                                                     | `[]`                                 |
+| volumeMounts.pvc        | list    | List of Persistent Volume Claims with name and mount-path to be mounted into the container for bounding                                                       | `[]`                                 |
+| volumeMounts.secrets    | list    | List of Secrets with name and mount-path to be mounted into the container to inject sensitive information                                                     | `[]`                                 |
 
 ### Note:
 To refer readme related to Alerts in Helm template, [click here](ALERTS.md)

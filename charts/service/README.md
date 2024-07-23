@@ -72,6 +72,7 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 | readinessProbe.failureThreshold    | number  | Specifies the number of consecutive failures needed to mark the probe as failed                                     | `3`                                  |
 | replicaCount                       | number  | Number of replicas to run                                                                                           | `2`                                  |
 | volumeMounts.configmaps            | list    | List of Configmaps with name and mount-path to be mounted into the container to inject configuration data           | `[]`                                 |
+| volumeMounts.pvc                   | list    | List of Persistent Volume Claims with name and mount-path to be mounted into the container for bounding             | `[]`                                 |
 | volumeMounts.secrets               | list    | List of Secrets with name and mount-path to be mounted into the container to inject sensitive information           | `[]`                                 |
 
 
