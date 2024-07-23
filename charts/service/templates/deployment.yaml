@@ -37,6 +37,11 @@ spec:
           secret:
             secretName: {{ $v.name }}
       {{- end }}
+      {{- range $k,$v := .Values.volumeMounts.pvc }}
+        - name: {{ $v.name }}
+          persistentVolumeClaim:
+            claimName: {{ $v.name }}
+      {{- end }}
       {{- end }}
       {{- if .Values.app_secrets }}
         - name: app-secrets
@@ -104,6 +109,13 @@ spec:
             {{- end }}
           {{- end }}
           {{- range $k,$v := .Values.volumeMounts.secrets }}
+            - name: {{ $v.name }}
+              mountPath: {{ $v.mountPath }}
+            {{- if ne $v.subPath "" }}
+              subPath: {{ $v.subPath }}
+            {{- end }}
+          {{- end }}
+          {{- range $k,$v := .Values.volumeMounts.pvc }}
             - name: {{ $v.name }}
               mountPath: {{ $v.mountPath }}
             {{- if ne $v.subPath "" }}

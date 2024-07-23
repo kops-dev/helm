@@ -42,6 +42,11 @@ spec:
               secret:
                 secretName: {{ $v.name }}
            {{- end }}
+           {{- range $k,$v := .Values.volumeMounts.pvc }}
+            - name: {{ $v.name }}
+              persistentVolumeClaim:
+                claimName: {{ $v.name }}
+          {{- end }}
           {{- end }}
           {{- if .Values.app_secrets }}
             - name: app-secrets
@@ -93,6 +98,13 @@ spec:
                   subPath: {{ $v.subPath }}
                 {{- end }}
               {{- end }}
+              {{- range $k,$v := .Values.volumeMounts.pvc }}
+                - name: {{ $v.name }}
+                  mountPath: {{ $v.mountPath }}
+                  {{- if ne $v.subPath "" }}
+                  subPath: {{ $v.subPath }}
+                  {{- end }}
+                {{- end }}
               {{- end }}
               # Volume mount is required for the secret to sync with kubernetes secret
               {{- if .Values.app_secrets }}
