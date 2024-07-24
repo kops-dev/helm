@@ -9,7 +9,7 @@ metadata:
   name: {{ .Values.name }}
 spec:
   groups:
-    - name: {{ .Values.name }}.rules
+    - name: {{ .Release.Namespace }}.{{ .Values.name }}.rules
       rules:
         # Alert if the cron job failed.
         - alert: {{ snakecase .Values.name }}_cron_job_failed

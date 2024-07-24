@@ -9,7 +9,7 @@ metadata:
   name: {{ .Values.name }}
 spec:
   groups:
-    - name: {{ .Values.name }}.rules
+    - name: {{ .Release.Namespace }}.{{ .Values.name }}.rules
       rules:
         # Alert if the number of pods goes down minimum over a period of time.
         - alert: {{ snakecase .Values.name }}_pod_below_minimum_replicas
