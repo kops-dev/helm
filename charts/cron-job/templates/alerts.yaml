@@ -14,7 +14,7 @@ spec:
         # Alert if the cron job failed.
         - alert: {{ snakecase .Values.name }}_cron_job_failed
           annotations:
-            description: "{{ .Values.name }} cron_job_failed."
+            description: "CronJob {{ .Values.name }} failed to complete in {{.Release.Name}} namespace."
           expr: kube_job_status_failed{namespace="{{ .Release.Namespace }}",job_name=~"{{ .Values.name }}-.*"} > {{.Values.alerts.standard.infra.cronjob_failed_threshold}}
           labels:
             severity: critical
