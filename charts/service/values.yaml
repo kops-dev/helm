@@ -32,7 +32,7 @@ maxCPU: "500m"
 maxMemory: "512M"
 minReplicas: 2
 maxReplicas: 4
-minAvailable: 1
+minAvailable: "25%"
 
 # Whether application is a CLI service
 cliService: false
