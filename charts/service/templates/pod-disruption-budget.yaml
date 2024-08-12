@@ -1,3 +1,4 @@
+{{- if gt (int .Values.minReplicas) 1 }} 
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
@@ -6,4 +7,5 @@ spec:
   minAvailable: {{ .Values.minAvailable }}
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      app: {{ .Values.name }} 
+{{- end }}
