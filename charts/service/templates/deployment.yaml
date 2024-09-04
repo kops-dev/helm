@@ -77,8 +77,10 @@ spec:
           ports:
             - name: http-port
               containerPort: {{ .Values.httpPort }}
+            {{- if and .Values.metricsPort (ne .Values.metricsPort 0) }}
             - name: metrics-port
               containerPort: {{ .Values.metricsPort }}
+            {{- end }}
             {{- range $k, $v := .Values.ports}}
             - name: {{ $k }}
               containerPort: {{ $v }}
