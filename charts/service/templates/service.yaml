@@ -9,7 +9,7 @@ spec:
     - name: http-port
       port: 80
       targetPort: {{ .Values.httpPort}}
-    {{- if and .Values.metricsPort (ne .Values.metricsPort 0) }}
+    {{- if and .Values.metricsPort (ne (int .Values.metricsPort) 0) }}
     - name: metrics-port
       port: 2121
       targetPort: {{ .Values.metricsPort }}

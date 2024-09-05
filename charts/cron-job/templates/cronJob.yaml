@@ -64,9 +64,9 @@ spec:
               {{- end }}
               imagePullPolicy: IfNotPresent
               ports:
-                {{- if and .Values.metricsPort (ne .Values.metricsPort 0) }}
-                - name: metrics-port
-                  containerPort: {{ .Values.metricsPort }}
+                {{- if and .Values.metricsPort (ne (int .Values.metricsPort) 0) }}
+                  - name: metrics-port
+                    containerPort: {{ .Values.metricsPort }}
                 {{- end }}
               envFrom:
                 {{- range $i, $name := .Values.envFrom.configmaps }}
