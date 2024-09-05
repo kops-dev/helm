@@ -10,7 +10,7 @@ spec:
     matchLabels:
       app: {{.Values.name}}
   endpoints:
-    {{- if and .Values.metricsScrapeInterval (ne .Values.metricsScrapeInterval "0s") }}
+    {{- if .Values.metricsPort}}
     - port: metrics-port
       interval: {{ .Values.metricsScrapeInterval }}
       path: /metrics
