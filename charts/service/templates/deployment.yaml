@@ -22,7 +22,7 @@ spec:
         - name: {{ . }}
         {{- end }}
       {{- end }}
-      {{- if .Values.app_secrets }}
+      {{- if .Values.appSecrets }}
       serviceAccountName: secrets-account
       {{- end }}
       volumes:
@@ -43,7 +43,7 @@ spec:
             claimName: {{ $v.name }}
       {{- end }}
       {{- end }}
-      {{- if .Values.app_secrets }}
+      {{- if .Values.appSecrets }}
         - name: app-secrets
           csi:
             driver: secrets-store.csi.k8s.io
@@ -67,7 +67,7 @@ spec:
             - name: {{ $k | quote }}
               valueFrom:
                 secretKeyRef:
-                  name: {{.Values.app_secrets}}
+                  name: {{.Values.appSecrets}}
                   key:  {{ $v | quote }}
       {{- end }}
       {{- end }}
@@ -124,7 +124,7 @@ spec:
           {{- end }}
           {{- end }}
             # Volume mount is required for the secret to sync with kubernetes secret
-          {{- if .Values.app_secrets }}
+          {{- if .Values.appSecrets }}
             - name: app-secrets
               mountPath: "/mnt/secrets-store"
               readOnly: true

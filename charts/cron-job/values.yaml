@@ -35,7 +35,7 @@ envFrom:
 env:
   APP_NAME: hello-api
 
-app_secrets: false
+appSecrets: false
 
 volumeMounts:
   configmaps:
@@ -51,4 +51,4 @@ volumeMounts:
 alerts:
   standard:
     infra:
-      cronjob_failed_threshold: 0
+      cronjobFailedThreshold: 0

@@ -40,7 +40,7 @@ _See [helm uninstall](https://helm.sh/docs/helm/helm_uninstall/) for command doc
 
 | Inputs                             | Type    | Description                                                                                                         | Default                              |
 |------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------|--------------------------------------|
-| app_secrets                        | boolean | Boolean whether to mount csi secrets on the container                                                               | `false`                              |
+| appSecrets                        | boolean | Boolean whether to mount csi secrets on the container                                                               | `false`                              |
 | cliService                         | boolean | Whether application is a CLI service                                                                                | `false`                              |
 | env                                | map     | Environment Variables can be provided to the container                                                              | `eg APP_NAME: hello-api`             |
 | envFrom.configmaps                 | list    | List of Configmaps from which env should be mounted on to containers                                                | `[]`                                 |

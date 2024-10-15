@@ -23,11 +23,11 @@ spec:
             service: {{ .Values.name }}
             namespace: {{ .Release.Namespace }}
         # Alert if the pod restarts.
-        {{- if ne .Values.alerts.standard.infra.pod_restart_threshold -1.0 }}
+        {{- if ne .Values.alerts.standard.infra.podRestartThreshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_pod_restarts
           annotations:
             description: "{{ .Values.name }} replicas has been restarting in {{ .Release.Namespace }} namespace."
-          expr: sum(increase(kube_pod_container_status_restarts_total{namespace="{{ .Release.Namespace }}",pod=~"{{ .Values.name }}-.*" }[{{ .Values.alerts.standard.infra.pod_restart_time_window }}])) > {{ .Values.alerts.standard.infra.pod_restart_threshold }}
+          expr: sum(increase(kube_pod_container_status_restarts_total{namespace="{{ .Release.Namespace }}",pod=~"{{ .Values.name }}-.*" }[{{ .Values.alerts.standard.infra.podRestartTimeWindow }}])) > {{ .Values.alerts.standard.infra.podRestartThreshold }}
           labels:
             severity: critical
             servicealert: "true"
@@ -35,11 +35,11 @@ spec:
             namespace: {{ .Release.Namespace }}
         {{- end}}
         # Alert if replicas of service are in unavailable state.
-        {{- if ne .Values.alerts.standard.infra.unavailable_replicas_threshold -1.0 }}
+        {{- if ne .Values.alerts.standard.infra.unavailableReplicasThreshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_unavailable_replicas
           annotations:
             description: "{{ .Values.name }} replicas has been unavailable in {{ .Release.Namespace }} namespace."
-          expr: sum(kube_deployment_status_replicas_unavailable{deployment="{{ .Values.name }}",namespace="{{ .Release.Namespace }}"}) > {{ .Values.alerts.standard.infra.unavailable_replicas_threshold }}
+          expr: sum(kube_deployment_status_replicas_unavailable{deployment="{{ .Values.name }}",namespace="{{ .Release.Namespace }}"}) > {{ .Values.alerts.standard.infra.unavailableReplicasThreshold }}
           labels:
             severity: critical
             servicealert: "true"
@@ -57,11 +57,11 @@ spec:
             service: {{ .Values.name }}
             namespace: {{ .Release.Namespace }}
         #  Alert if replica count crosses the threshold percentage of max pod count.
-        {{- if ne .Values.alerts.standard.infra.hpa_nearing_max_pod_threshold -1.0 }}
+        {{- if ne .Values.alerts.standard.infra.hpaNearingMaxPodThreshold -1.0 }}
         - alert: {{ snakecase .Values.name }}_hpa_nearing_max_pod_count
           annotations:
-            description: "HPA of {{ .Values.name }} has been running at {{ .Values.alerts.standard.infra.hpa_nearing_max_pod_threshold }} percent of max replicas."
-          expr: (sum(kube_horizontalpodautoscaler_status_current_replicas{namespace="{{ .Release.Namespace }}", horizontalpodautoscaler="{{ .Values.name }}"}) / sum(kube_horizontalpodautoscaler_spec_max_replicas{namespace="{{ .Release.Namespace }}", horizontalpodautoscaler="{{ .Values.name }}"})) * 100 >= {{ .Values.alerts.standard.infra.hpa_nearing_max_pod_threshold }}
+            description: "HPA of {{ .Values.name }} has been running at {{ .Values.alerts.standard.infra.hpaNearingMaxPodThreshold }} percent of max replicas."
+          expr: (sum(kube_horizontalpodautoscaler_status_current_replicas{namespace="{{ .Release.Namespace }}", horizontalpodautoscaler="{{ .Values.name }}"}) / sum(kube_horizontalpodautoscaler_spec_max_replicas{namespace="{{ .Release.Namespace }}", horizontalpodautoscaler="{{ .Values.name }}"})) * 100 >= {{ .Values.alerts.standard.infra.hpaNearingMaxPodThreshold }}
           labels:
             severity: critical
             servicealert: "true"
@@ -69,11 +69,11 @@ spec:
             namespace: {{ .Release.Namespace }}
         {{- end}}
         # Alert if memory utilization is beyond threshold for service in any pod
-        {{- if ne .Values.alerts.standard.infra.service_memory_utilization_threshold -1.0 }}
-        - alert: {{ snakecase .Values.name }}_service_memory_utilization_above_{{ .Values.alerts.standard.infra.service_memory_utilization_threshold}}
+        {{- if ne .Values.alerts.standard.infra.serviceMemoryUtilizationThreshold -1.0 }}
+        - alert: {{ snakecase .Values.name }}_service_memory_utilization_above_{{ .Values.alerts.standard.infra.serviceMemoryUtilizationThreshold}}
           annotations:
-            description: "Memory Utilisation of {{ .Values.name }} exceeded {{ .Values.alerts.standard.infra.service_memory_utilization_threshold}} percent of the resource limits"
-          expr: sum(container_memory_working_set_bytes{pod=~"{{ .Values.name }}-.*", container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"}) / sum(container_spec_memory_limit_bytes{pod=~"{{ .Values.name }}-.*",container="{{ .Values.name }}",namespace="{{ .Release.Namespace }}"}) *100 > {{ .Values.alerts.standard.infra.service_memory_utilization_threshold }}
+            description: "Memory Utilisation of {{ .Values.name }} exceeded {{ .Values.alerts.standard.infra.serviceMemoryUtilizationThreshold}} percent of the resource limits"
+          expr: sum(container_memory_working_set_bytes{pod=~"{{ .Values.name }}-.*", container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"}) / sum(container_spec_memory_limit_bytes{pod=~"{{ .Values.name }}-.*",container="{{ .Values.name }}",namespace="{{ .Release.Namespace }}"}) *100 > {{ .Values.alerts.standard.infra.serviceMemoryUtilizationThreshold }}
           labels:
             severity: critical
             servicealert: "true"
@@ -81,11 +81,11 @@ spec:
             namespace: {{ .Release.Namespace }}
         {{- end}}
         # Alert if CPU utilization is beyond threshold for service in any pod
-        {{- if ne .Values.alerts.standard.infra.service_cpu_utilization_threshold -1.0 }}
-        - alert: {{ snakecase .Values.name }}_service_cpu_utilization_above_{{ .Values.alerts.standard.infra.service_cpu_utilization_threshold}}
+        {{- if ne .Values.alerts.standard.infra.serviceCpuUtilizationThreshold -1.0 }}
+        - alert: {{ snakecase .Values.name }}_service_cpu_utilization_above_{{ .Values.alerts.standard.infra.serviceCpuUtilizationThreshold }}
           annotations:
-            description: "CPU Utilisation of {{ .Values.name }} exceeded {{ .Values.alerts.standard.infra.service_cpu_utilization_threshold}} percent of the resource limits"
-          expr: ((sum(irate(container_cpu_usage_seconds_total{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"}[{{ .Values.alerts.standard.infra.service_cpu_utilization_time_window }}]))  / sum(container_spec_cpu_quota{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"} / container_spec_cpu_period{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"})  ) * 100)  > {{ .Values.alerts.standard.infra.service_cpu_utilization_threshold }} 
+            description: "CPU Utilisation of {{ .Values.name }} exceeded {{ .Values.alerts.standard.infra.serviceCpuUtilizationThreshold }} percent of the resource limits"
+          expr: ((sum(irate(container_cpu_usage_seconds_total{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"}[{{ .Values.alerts.standard.infra.serviceCpuUtilizationTimeWindow }}]))  / sum(container_spec_cpu_quota{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"} / container_spec_cpu_period{container="{{ .Values.name }}", namespace="{{ .Release.Namespace }}"})  ) * 100)  > {{ .Values.alerts.standard.infra.serviceCpuUtilizationThreshold }} 
           labels:
             severity: critical
             servicealert: "true"
@@ -99,17 +99,17 @@ spec:
           annotations:
             description: {{ $v.description | quote }}
           {{- if ne (default 0.0 $v.percentile) 0.0 }}
-          expr: (histogram_quantile({{ $v.percentile }}, sum(rate({{ $v.alert_rule }}{service="{{ $.Values.name }}"}[{{ $v.time_window }}])) by ({{ $v.sum_by_label }}))){{ $v.query_operator | default (printf ">") }} {{ $v.threshold }}
+          expr: (histogram_quantile({{ $v.percentile }}, sum(rate({{ $v.alertRule }}{service="{{ $.Values.name }}"}[{{ $v.timeWindow }}])) by ({{ $v.sumByLabel }}))){{ $v.queryOperator | default (printf ">") }} {{ $v.threshold }}
           {{- else }}
-            {{- if  ne $v.sum_by_label ""  }}
-               {{- if  ne $v.label_value ""  }}
-          expr: sum by ({{ $v.sum_by_label }}) (increase({{ $v.alert_rule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{printf ", %s=\"%s\"" $v.sum_by_label $v.label_value }}{{ printf "}["}}{{ printf $v.time_window}}{{ printf "]))"}}{{ $v.query_operator | default (printf " > ") }}{{ $v.threshold}}
+            {{- if  ne $v.sumByLabel ""  }}
+               {{- if  ne $v.labelValue ""  }}
+          expr: sum by ({{ $v.sumByLabel }}) (increase({{ $v.alertRule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{printf ", %s=\"%s\"" $v.sumByLabel $v.labelValue }}{{ printf "}["}}{{ printf $v.timeWindow}}{{ printf "]))"}}{{ $v.queryOperator | default (printf " > ") }}{{ $v.threshold}}
                {{- else}}
-          expr: sum by ({{ $v.sum_by_label }}) (increase({{ $v.alert_rule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{ printf "}["}}{{ printf $v.time_window}}{{ printf "]))"}}{{  $v.query_operator | default (printf ">") }}{{ $v.threshold}}
+          expr: sum by ({{ $v.sumByLabel }}) (increase({{ $v.alertRule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{ printf "}["}}{{ printf $v.timeWindow}}{{ printf "]))"}}{{  $v.queryOperator | default (printf ">") }}{{ $v.threshold}}
                {{- end }}
             {{- end }}
-            {{- if  eq $v.sum_by_label ""  }}
-          expr: sum(increase({{ $v.alert_rule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{ printf "}["}}{{ printf $v.time_window}}{{ printf "]))"}}{{ $v.query_operator | default (printf ">") }}{{ $v.threshold}}
+            {{- if  eq $v.sumByLabel ""  }}
+          expr: sum(increase({{ $v.alertRule }}{service="{{ $.Values.name }}", namespace="{{ $.Release.Namespace }}"{{ printf "}["}}{{ printf $v.timeWindow}}{{ printf "]))"}}{{ $v.queryOperator | default (printf ">") }}{{ $v.threshold}}
             {{- end }}
           {{- end }}
           labels:

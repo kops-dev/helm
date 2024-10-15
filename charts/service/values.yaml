@@ -58,7 +58,7 @@ livenessProbe:
 env:
   # APP_NAME: hello-api
 
-app_secrets: false
+appSecrets: false
 
 volumeMounts:
   configmaps:
@@ -74,24 +74,24 @@ volumeMounts:
 alerts:
   standard:
     infra:
-      unavailable_replicas_threshold: 0                   # Alert if the available replicas is lesser than number of desired replicas
-      pod_restart_threshold: 0                            # Alert if the pod restarts goes beyond threshold over a 5-minute window.
-      pod_restart_time_window: "5m"                       # Time window  ,default "5m"
-      hpa_nearing_max_pod_threshold: 80                   # Alert if replica count crosses the threshold percentage of max pod count
-      service_memory_utilization_threshold: 90            # Alert if service memory exceeds threshold
-      service_cpu_utilization_threshold: 90               # Alert if service cpu exceeds threshold
-      service_cpu_utilization_time_window: "5m"           # Time window for service cpu utilization
-      health_check_failure_threshold: 50                  # Alert if  application health-check failures goes beyond 50 in a 5-minute window.
-      health_check_failure_time_window: "5m"              # Time window  ,default "5m"
+      unavailableReplicasThreshold: 0                   # Alert if the available replicas is lesser than number of desired replicas
+      podRestartThreshold: 0                            # Alert if the pod restarts goes beyond threshold over a 5-minute window.
+      podRestartTimeWindow: "5m"                        # Time window  ,default "5m"
+      hpaNearingMaxPodThreshold: 80                     # Alert if replica count crosses the threshold percentage of max pod count
+      serviceMemoryUtilizationThreshold: 90             # Alert if service memory exceeds threshold
+      serviceCpuUtilizationThreshold: 90                # Alert if service cpu exceeds threshold
+      serviceCpuUtilizationTimeWindow: "5m"             # Time window for service cpu utilization
+      healthCheckFailureThreshold: 50                   # Alert if  application health-check failures goes beyond 50 in a 5-minute window.
+      healthCheckFailureTimeWindow: "5m"                # Time window  ,default "5m"
   custom:
   # - name: "Custom alert if user_created events goes below threshold for 5 min"
   #   description: "Custom alert if user_created events goes below threshold for 5 min"
-  #   alert_rule: "user_post_get_counter" # Metric Name exposed by /metric endpoint
-  #   sum_by_label: "events" # Metric events key; can be empty string
+  #   alertRule: "user_post_get_counter" # Metric Name exposed by /metric endpoint
+  #   sumByLabel: "events" # Metric events key; can be empty string
   #   percentile: -1.0 #Percentile is useful for histogram queries
-  #   label_value: "user_created" # Metric Event Name; can be empty string
-  #   query_operator: <= # Query Operator, by default its `>`
-  #   time_window: "5m"
+  #   labelValue: "user_created" # Metric Event Name; can be empty string
+  #   queryOperator: <= # Query Operator, by default its `>`
+  #   timeWindow: "5m"
   #   threshold: 1
   #   labels:
   #     severity: critical
@@ -106,7 +106,7 @@ alerts:
 #   DB_PASSWORD: zs-test-postgresqldb-db-secret      # Secrets will be in the format env_variable: AWS_Secret_Name
  
 # This section deals with creating custom dashboards for grafana
-grafana_dashboard: 
+grafanaDashboard: 
 #  sample format for using json model
 #  custom_dashboard.json: 
 #  {"annotations":{"list":[{"builtIn":1,"datasource":"-- Grafana --","enable":true,"hide":true,"iconColor":"rgba(0, 211, 255, 1)","name":"Annotations & Alerts","target":{"limit":100,"matchAny":false,"tags":[],"type":"dashboard"},"type":"dashboard"}]},"editable":true,"gnetId":null,"graphTooltip":0,"id":27,"links":[],"panels":[],"schemaVersion":30,"style":"dark","tags":[],"templating":{"list":[]},"time":{"from":"now-6h","to":"now"},"timepicker":{},"timezone":"","title":"Custom dashboard","version":1} 
